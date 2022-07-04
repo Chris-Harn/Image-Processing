@@ -3,16 +3,16 @@
 #include "Utility.h"
 
 Window::Window() {
-    m_pMainWindow = nullptr;
+    m_pWindow = nullptr;
     m_BufferWidth = 0;
     m_BufferHeight = 0;
     m_Vsync = true;
 }
 
 Window::~Window() {
-    if( m_pMainWindow != nullptr ) {
-        glfwDestroyWindow( m_pMainWindow );
-        m_pMainWindow = nullptr;
+    if( m_pWindow != nullptr ) {
+        glfwDestroyWindow( m_pWindow );
+        m_pWindow = nullptr;
     }
 
     glfwTerminate();
@@ -39,28 +39,28 @@ bool Window::Initialization( unsigned int width,
     // Grab current window settings and make new window based on those settings
     //GLFWmonitor *monitor = glfwGetPrimaryMonitor(); // Read out all supported versions of this display
     //const GLFWvidmode *mode = glfwGetVideoMode( monitor );
-    //m_pMainWindow = glfwCreateWindow( width, height, TITLE_RESOLUTION, glfwGetPrimaryMonitor(), nullptr );
-    m_pMainWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
-    //glfwSetWindowMonitor( m_pMainWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate );
+    //m_pWindow = glfwCreateWindow( width, height, TITLE_RESOLUTION, glfwGetPrimaryMonitor(), nullptr );
+    m_pWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
+    //glfwSetWindowMonitor( m_pWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate );
 
-    if( !m_pMainWindow ) {
+    if( !m_pWindow ) {
         print_error_message( "ERROR: EXIT EARLY: GLFW window creation failed." );
         glfwTerminate();
         return false;
     }
     
     // Get buffer size information
-    glfwGetFramebufferSize( m_pMainWindow, &m_BufferWidth, &m_BufferHeight );
+    glfwGetFramebufferSize( m_pWindow, &m_BufferWidth, &m_BufferHeight );
 
     // Get context for GLEW to use
-    glfwMakeContextCurrent( m_pMainWindow );
+    glfwMakeContextCurrent( m_pWindow );
 
     // Allow modern extension features
     glewExperimental = GL_TRUE;
 
     if( glewInit() != GLEW_OK ) {
         print_error_message( "ERROR: EXIT EARLY: GLEW initialization failed." );
-        glfwDestroyWindow( m_pMainWindow );
+        glfwDestroyWindow( m_pWindow );
         glfwTerminate();
         return false;
     }
@@ -69,7 +69,7 @@ bool Window::Initialization( unsigned int width,
     glViewport( 0, 0, m_BufferWidth, m_BufferHeight );
 
     // Tell window to stay open
-    glfwSetWindowShouldClose( m_pMainWindow, GL_FALSE );
+    glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
 
     return true;
 }
