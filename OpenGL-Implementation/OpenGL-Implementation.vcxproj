@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Dev\Image-Processing\External_Dependances\GLFW\x64\lib;C:\Dev\Image-Processing\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\GLM\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\GLM\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -146,6 +146,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\OpenGL\Framebuffer.cpp" />
+    <ClCompile Include="Source\OpenGL\ResourceManager.cpp" />
+    <ClCompile Include="Source\OpenGL\Shader.cpp" />
+    <ClCompile Include="Source\OpenGL\Texture.cpp" />
+    <ClCompile Include="Source\stb_image.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Main.cpp" />
@@ -155,8 +160,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Application.h" />
+    <ClInclude Include="Include\OpenGL\Framebuffer.h" />
     <ClInclude Include="Include\OpenGL\Quad.h" />
+    <ClInclude Include="Include\OpenGL\ResourceManager.h" />
+    <ClInclude Include="Include\OpenGL\Shader.h" />
+    <ClInclude Include="Include\OpenGL\Texture.h" />
     <ClInclude Include="Include\OpenGL\Window.h" />
+    <ClInclude Include="Include\stb_image.h" />
     <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Include\Utility.h" />
   </ItemGroup>
