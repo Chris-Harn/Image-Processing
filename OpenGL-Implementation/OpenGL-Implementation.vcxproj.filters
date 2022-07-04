@@ -51,4 +51,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resouces\Shaders\basic.glsl" />
+    <None Include="Resouces\Shaders\Error\caution_strips.glsl" />
+  </ItemGroup>
 </Project>
