@@ -1,6 +1,6 @@
 #include "OpenGL/Window.h"
 
-#include <stdio.h>
+#include "Utility.h"
 
 Window::Window() {
     m_pMainWindow = nullptr;
@@ -23,7 +23,7 @@ bool Window::Initialization( unsigned int width,
     const char *title ) {
    
     if( glfwInit() == false ) {
-        printf( "GLFW Initialization failed.\n" );
+        print_error_message( "ERROR: EXIT EARLY: GLFW Initialization failed." );
         glfwTerminate();
         return false;
     }
@@ -44,7 +44,7 @@ bool Window::Initialization( unsigned int width,
     //glfwSetWindowMonitor( m_pMainWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate );
 
     if( !m_pMainWindow ) {
-        printf( "GLFW window creation failed!" );
+        print_error_message( "ERROR: EXIT EARLY: GLFW window creation failed." );
         glfwTerminate();
         return false;
     }
@@ -59,7 +59,7 @@ bool Window::Initialization( unsigned int width,
     glewExperimental = GL_TRUE;
 
     if( glewInit() != GLEW_OK ) {
-        printf( "GLEW initialization failed!" );
+        print_error_message( "ERROR: EXIT EARLY: GLEW initialization failed." );
         glfwDestroyWindow( m_pMainWindow );
         glfwTerminate();
         return false;

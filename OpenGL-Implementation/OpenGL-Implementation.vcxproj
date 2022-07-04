@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\OpenGL\Quad.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Include\OpenGL\Quad.h" />
     <ClInclude Include="Include\OpenGL\Window.h" />
     <ClInclude Include="Include\Timer.h" />
+    <ClInclude Include="Include\Utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

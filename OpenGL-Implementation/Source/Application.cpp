@@ -1,15 +1,14 @@
-#include <iostream> // cout, endl
-
 #include "Application.h"
 
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "Timer.h"
+#include "Utility.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
 Quad *g_pQuad = nullptr;
-Timer *g_pAppTimer;
+Timer *g_pAppTimer = nullptr;
 
 Application::Application() : AppRunning(true) {
 
@@ -18,11 +17,13 @@ Application::Application() : AppRunning(true) {
 bool Application::Initialization( unsigned window_width, unsigned int window_height, float video_fps, const char *title ) {
     g_pMainWindow = new Window();
     if( g_pMainWindow->Initialization( window_width, window_height, title ) != true) {
+        print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
 
     g_pSecondaryWindow = new Window();
     if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video" ) != true ) {
+        print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
 
@@ -31,7 +32,7 @@ bool Application::Initialization( unsigned window_width, unsigned int window_hei
     g_pAppTimer = new Timer();
     g_pAppTimer->Start( video_fps );
 
-    std::cout << "Program started without issue." << std::endl;
+    print_message( "Program started without issue." );
 
     return true;
 }
@@ -47,15 +48,17 @@ void Application::Update() {
 void Application::Render() {
     g_pAppTimer->RestrictFrameRate();
 
-    std::cout << "Program finished one frame." << std::endl;
+    print_message( "Program finished one frame." );
 }
 
 void Application::CleanUp() {
-    if( g_pMainWindow != nullptr ) delete g_pMainWindow;
-    if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow;
-    if( g_pQuad != nullptr ) delete g_pQuad;
+    // Clean up in reverse order created
+    if( g_pAppTimer != nullptr ) delete g_pAppTimer; g_pAppTimer = nullptr;
+    if( g_pQuad != nullptr ) delete g_pQuad; g_pQuad = nullptr;
+    if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow; g_pSecondaryWindow = nullptr;
+    if( g_pMainWindow != nullptr ) delete g_pMainWindow; g_pMainWindow = nullptr;
 
-    std::cout << "Program finished without issue." << std::endl;
+    print_message( "Program finished without issue." );
 }
 
 bool Application::ContinueProgram() {
