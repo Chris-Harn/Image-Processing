@@ -1,2 +1,2 @@
 # Image-Processing
-Sandbox for preforming image processing on digital VHS video.
+Sandbox for performing image processing on digital VHS video.
