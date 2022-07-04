@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Dev\Image-Processing\OpenGL-Implementation\Header;C:\Dev\Image-Processing\External_Dependances\GLFW\x64\include;C:\Dev\Image-Processing\External_Dependances\GLEW\x64\include;C:\Dev\Image-Processing\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Dev\Image-Processing\External_Dependances\GLFW\x64\lib;C:\Dev\Image-Processing\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Dev\Image-Processing\OpenGL-Implementation\Header;C:\Dev\Image-Processing\External_Dependances\GLFW\x64\include;C:\Dev\Image-Processing\External_Dependances\GLEW\x64\include;C:\Dev\Image-Processing\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Dev\Image-Processing\External_Dependances\GLFW\x64\lib;C:\Dev\Image-Processing\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,9 +152,9 @@
     <ClCompile Include="Source\OpenGL\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header\Application.h" />
-    <ClInclude Include="Header\OpenGL\Quad.h" />
-    <ClInclude Include="Header\OpenGL\Window.h" />
+    <ClInclude Include="Include\Application.h" />
+    <ClInclude Include="Include\OpenGL\Quad.h" />
+    <ClInclude Include="Include\OpenGL\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

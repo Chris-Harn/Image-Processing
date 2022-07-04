@@ -24,6 +24,8 @@ bool Application::Initialization( unsigned window_width, unsigned int window_hei
     if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video" ) != true ) {
         return false;
     }
+
+    return true;
 }
 
 void Application::ProcessInput() {

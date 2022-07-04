@@ -29,13 +29,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header\Application.h">
+    <ClInclude Include="Include\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header\OpenGL\Quad.h">
+    <ClInclude Include="Include\OpenGL\Quad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header\OpenGL\Window.h">
+    <ClInclude Include="Include\OpenGL\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
