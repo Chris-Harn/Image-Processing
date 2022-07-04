@@ -11,7 +11,7 @@ public:
     void Render();
     void CleanUp();
 
-    bool AppStillOpen();
+    bool ContinueProgram();
 
 public:
     bool AppRunning;

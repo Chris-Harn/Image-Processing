@@ -5,8 +5,8 @@
 int main()
 {
     Application mainApp;
-    if( mainApp.Initialization( 600, 480, "Image Processing digital, VHS videos." ) ) {
-        if(mainApp.AppStillOpen()) {
+    if( mainApp.Initialization( 720, 480, "Image Processing digital, VHS videos." ) ) {
+        while( mainApp.ContinueProgram() ) {
             mainApp.ProcessInput();
             mainApp.Update();
             mainApp.Render();
@@ -14,4 +14,6 @@ int main()
     }
 
     mainApp.CleanUp();
+
+    return 0;
 }

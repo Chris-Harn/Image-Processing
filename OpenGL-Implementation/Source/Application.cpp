@@ -2,25 +2,28 @@
 
 #include "Application.h"
 
-//#include "OpenGL\Window.h"
-//#include "OpenGL\Quad.h"
-//
-//Window *g_pMainWindow;
-//Window *g_pSecondaryWindow;
-//Quad *g_pQuad;
+#include "OpenGL\Window.h"
+#include "OpenGL\Quad.h"
+
+Window *g_pMainWindow;
+Window *g_pSecondaryWindow;
 
 Application::Application() : AppRunning(true) {
 
 }
 
 bool Application::Initialization( unsigned window_width, unsigned int window_height, const char *title ) {
-    //g_pMainWindow = new Window();
-    //g_pSecondaryWindow = new Window();
-    //g_pQuad = new Quad();
-
     std::cout << "Program started without issue." << std::endl;
 
-    return true;
+    g_pMainWindow = new Window();
+    if( g_pMainWindow->Initialization( window_width, window_height, title ) != true) {
+        return false;
+    }
+
+    g_pSecondaryWindow = new Window();
+    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video" ) != true ) {
+        return false;
+    }
 }
 
 void Application::ProcessInput() {
@@ -36,13 +39,9 @@ void Application::Render() {
 }
 
 void Application::CleanUp() {
-    //if( g_pMainWindow != nullptr ) delete g_pMainWindow;
-    //if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow;
-    //if( g_pQuad != nullptr ) delete g_pQuad;
-
     std::cout << "Program finished without issue." << std::endl;
 }
 
-bool Application::AppStillOpen() {
+bool Application::ContinueProgram() {
     return AppRunning;
 }

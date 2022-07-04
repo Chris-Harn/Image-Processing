@@ -148,9 +148,13 @@
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\OpenGL\Quad.cpp" />
+    <ClCompile Include="Source\OpenGL\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Application.h" />
+    <ClInclude Include="Header\OpenGL\Quad.h" />
+    <ClInclude Include="Header\OpenGL\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
