@@ -15,21 +15,41 @@ Application::Application() : AppRunning(true) {
 }
 
 bool Application::Initialization( unsigned window_width, unsigned int window_height, float video_fps, const char *title ) {
-    g_pMainWindow = new Window();
+    try { g_pMainWindow = new Window(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: Main Window failed to allocate on heap." );
+        return false;
+    }
     if( g_pMainWindow->Initialization( window_width, window_height, title ) != true) {
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
 
-    g_pSecondaryWindow = new Window();
+    try { g_pSecondaryWindow = new Window(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: Secondary Window failed to allocate on heap." );
+        return false;
+    }
     if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video" ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
 
-    g_pQuad = new Quad();
+    try{ g_pQuad = new Quad(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: Quad failed to allocate on heap." );
+        return false;
+    }
 
-    g_pAppTimer = new Timer();
+    try{ g_pAppTimer = new Timer(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: App timer failed to allocate on heap." );
+        return false;
+    }
     g_pAppTimer->Start( video_fps );
 
     print_message( "Program started without issue." );

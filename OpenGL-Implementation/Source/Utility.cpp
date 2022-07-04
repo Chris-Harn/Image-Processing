@@ -1,7 +1,5 @@
 #include "Utility.h"
 
-#include <iostream>
-
 void print_message( const char *message ) {
     std::cout << message << std::endl;
 }

@@ -36,12 +36,7 @@ bool Window::Initialization( unsigned int width,
     // Allow forward compatiblity
     glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
 
-    // Grab current window settings and make new window based on those settings
-    //GLFWmonitor *monitor = glfwGetPrimaryMonitor(); // Read out all supported versions of this display
-    //const GLFWvidmode *mode = glfwGetVideoMode( monitor );
-    //m_pWindow = glfwCreateWindow( width, height, TITLE_RESOLUTION, glfwGetPrimaryMonitor(), nullptr );
     m_pWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
-    //glfwSetWindowMonitor( m_pWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate );
 
     if( !m_pWindow ) {
         print_error_message( "ERROR: EXIT EARLY: GLFW window creation failed." );
