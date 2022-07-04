@@ -1,11 +1,12 @@
-
-
 #include "Application.h"
 
 int main()
 {
+    // Load in video and fill in x res, y res, frame rate, etc etc needed for
+    // the application that follows
+
     Application mainApp;
-    if( mainApp.Initialization( 720, 480, "Image Processing digital, VHS videos." ) ) {
+    if( mainApp.Initialization( 720, 480, 24.0f, "Image Processing digital, VHS videos." ) ) {
         while( mainApp.ContinueProgram() ) {
             mainApp.ProcessInput();
             mainApp.Update();

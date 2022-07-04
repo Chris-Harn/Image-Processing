@@ -4,16 +4,18 @@
 
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
+#include "Timer.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
 Quad *g_pQuad = nullptr;
+Timer *g_pAppTimer;
 
 Application::Application() : AppRunning(true) {
 
 }
 
-bool Application::Initialization( unsigned window_width, unsigned int window_height, const char *title ) {
+bool Application::Initialization( unsigned window_width, unsigned int window_height, float video_fps, const char *title ) {
     g_pMainWindow = new Window();
     if( g_pMainWindow->Initialization( window_width, window_height, title ) != true) {
         return false;
@@ -26,6 +28,9 @@ bool Application::Initialization( unsigned window_width, unsigned int window_hei
 
     g_pQuad = new Quad();
 
+    g_pAppTimer = new Timer();
+    g_pAppTimer->Start( video_fps );
+
     std::cout << "Program started without issue." << std::endl;
 
     return true;
@@ -36,10 +41,12 @@ void Application::ProcessInput() {
 }
 
 void Application::Update() {
-    AppRunning = false;
+    //AppRunning = false;
 }
 
 void Application::Render() {
+    g_pAppTimer->RestrictFrameRate();
+
     std::cout << "Program finished one frame." << std::endl;
 }
 
