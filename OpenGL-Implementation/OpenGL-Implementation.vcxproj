@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GUI.cpp" />
     <ClCompile Include="Source\OpenGL\Framebuffer.cpp" />
     <ClCompile Include="Source\OpenGL\ResourceManager.cpp" />
     <ClCompile Include="Source\OpenGL\Shader.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\GUI.h" />
     <ClInclude Include="Include\Application.h" />
     <ClInclude Include="Include\OpenGL\Framebuffer.h" />
     <ClInclude Include="Include\OpenGL\Quad.h" />

@@ -3,6 +3,7 @@
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "OpenGL\ResourceManager.h"
+#include "Gui.h"
 #include "Timer.h"
 #include "Utility.h"
 
@@ -121,6 +122,7 @@ void Application::Render() {
     g_pSecondaryWindow->MakeCurrentContext();
     g_pSecondaryWindow->ClearColorBuffer();
 
+    // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideoPlayback" )->Bind();
     ResourceManager::GetShader( "CautionImageTest" )->Use();
     g_pQuad2->RenderQuad();

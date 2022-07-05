@@ -38,7 +38,8 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     // Allow forward compatiblity
     glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
 
-    //glfwWindowHint( GLFW_FOCUS_ON_SHOW, GLFW_TRUE );
+    // Lock current aspect ratio - Must be before window creation
+    glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
     m_pWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
 
@@ -78,9 +79,6 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     // Tell window to stay open
     glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
 
-    // Lock current aspect ratio
-    glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
-
     // Set window position
     if( secondary_window == false ) {
         glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 1.2 ), int( m_BufferHeight * 0.5f ) );
@@ -110,7 +108,7 @@ void Window::CreateCallbacks() {
     glfwSetInputMode( m_pWindow, GLFW_STICKY_KEYS, 1 );
 
     // Window resize callback
-    glfwSetFramebufferSizeCallback( m_pWindow, HandleFramebufferResize );
+    //glfwSetFramebufferSizeCallback( m_pWindow, HandleFramebufferResize );
 }
 
 void Window::HandleKeys( GLFWwindow *window, int key, int code, int action, int mode ) {
