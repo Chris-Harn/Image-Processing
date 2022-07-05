@@ -14,14 +14,14 @@ Application::Application() : AppRunning(true) {
 
 }
 
-bool Application::Initialization( unsigned window_width, unsigned int window_height, float video_fps, const char *title ) {
+bool Application::Initialization( unsigned int window_width, unsigned int window_height, float video_fps, const char *title ) {    
     try { g_pMainWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Main Window failed to allocate on heap." );
         return false;
     }
-    if( g_pMainWindow->Initialization( window_width, window_height, title ) != true) {
+    if( g_pMainWindow->Initialization( window_width, window_height, title, false ) != true) {
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
@@ -53,18 +53,27 @@ bool Application::Initialization( unsigned window_width, unsigned int window_hei
 }
 
 void Application::ProcessInput() {
-
+    g_pMainWindow->PollEvents();
 }
 
 void Application::Update() {
-    //AppRunning = false;
+
 }
 
 void Application::Render() {
+    /*******************************************************/
+    // Render Main Window
+    /*******************************************************/
+    //g_pMainWindow->MakeCurrentContext();
+    g_pMainWindow->ClearColorBuffer();
     ResourceManager::GetShader( "CautionImage" )->Use();
     g_pQuad->RenderQuad();
 
     g_pMainWindow->SwapBuffers();
+
+    /*******************************************************/
+    // Render Secondary Window
+    /*******************************************************/
 
     g_pAppTimer->RestrictFrameRate();
 }
@@ -74,6 +83,9 @@ void Application::CleanUp() {
     if( g_pAppTimer != nullptr ) delete g_pAppTimer; g_pAppTimer = nullptr;
     if( g_pQuad != nullptr ) delete g_pQuad; g_pQuad = nullptr;
     if( g_pMainWindow != nullptr ) delete g_pMainWindow; g_pMainWindow = nullptr;
+
+    // Get rid of all shaders and textures
+    ResourceManager::CleanUp();
 
     print_message( "Program finished without issue." );
 }

@@ -5,10 +5,10 @@ class Application {
 public:
     Application();
 
-    bool Initialization( unsigned window_width, 
-                         unsigned int window_height, 
-                         float video_fps, 
-                         const char *title );
+    bool Initialization( unsigned int window_width,
+        unsigned int window_height,
+        float video_fps,
+        const char *title );
     void ProcessInput();
     void Update();
     void Render();
