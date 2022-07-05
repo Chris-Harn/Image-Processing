@@ -79,8 +79,8 @@ bool Window::Initialization( unsigned int width, unsigned int height,
         // Tell window to stay open
         glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
 
-        // Constraint aspect ratio
-        glfwSetWindowAspectRatio( m_pWindow, 4, 3 );
+        // Lock current aspect ratio
+        glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     } else {
         /**************************************************************************/
         /*** Setup Secondary Window                                             ***/
@@ -97,7 +97,7 @@ void Window::ToggleVsync() {
 }
 
 void Window::ClearColorBuffer() {
-    glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+    glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT );
 }
 
