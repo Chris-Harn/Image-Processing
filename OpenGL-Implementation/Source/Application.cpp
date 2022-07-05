@@ -2,11 +2,11 @@
 
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
+#include "OpenGL\ResourceManager.h"
 #include "Timer.h"
 #include "Utility.h"
 
 Window *g_pMainWindow = nullptr;
-Window *g_pSecondaryWindow = nullptr;
 Quad *g_pQuad = nullptr;
 Timer *g_pAppTimer = nullptr;
 
@@ -26,17 +26,6 @@ bool Application::Initialization( unsigned window_width, unsigned int window_hei
         return false;
     }
 
-    try { g_pSecondaryWindow = new Window(); }
-    catch( const std::bad_alloc &e ) {
-        (void)e;
-        print_error_message( "ERROR: MEMORY ALLOCATION: Secondary Window failed to allocate on heap." );
-        return false;
-    }
-    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video" ) != true ) {
-        print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
-        return false;
-    }
-
     try{ g_pQuad = new Quad(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -52,6 +41,12 @@ bool Application::Initialization( unsigned window_width, unsigned int window_hei
     }
     g_pAppTimer->Start( video_fps );
 
+    // Load Shaders, framebuffers, and other resources... 
+    ResourceManager::LoadShader( "Resource/Shaders/Error/CautionStrips.glsl", "CautionImage" );
+
+    ResourceManager::LoadShader( "Resource/Shaders/BasicBlit.glsl", "BlitImage" );
+    ResourceManager::GetShader( "BlitImage" )->SetInteger( "u_Texture", 0, true );
+
     print_message( "Program started without issue." );
 
     return true;
@@ -66,16 +61,18 @@ void Application::Update() {
 }
 
 void Application::Render() {
-    g_pAppTimer->RestrictFrameRate();
+    ResourceManager::GetShader( "CautionImage" )->Use();
+    g_pQuad->RenderQuad();
 
-    print_message( "Program finished one frame." );
+    g_pMainWindow->SwapBuffers();
+
+    g_pAppTimer->RestrictFrameRate();
 }
 
 void Application::CleanUp() {
     // Clean up in reverse order created
     if( g_pAppTimer != nullptr ) delete g_pAppTimer; g_pAppTimer = nullptr;
     if( g_pQuad != nullptr ) delete g_pQuad; g_pQuad = nullptr;
-    if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow; g_pSecondaryWindow = nullptr;
     if( g_pMainWindow != nullptr ) delete g_pMainWindow; g_pMainWindow = nullptr;
 
     print_message( "Program finished without issue." );

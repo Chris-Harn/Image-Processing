@@ -20,7 +20,7 @@ uniform float iTime;
 float interval = 360.0; // Width of Bands
 
 void main() {
-	// Caution Yellow - For when a Shader Fails to Compile
+	// Caution Yellow
 	vec4 yellow = vec4( 0.972656, 0.835938, 0.238281, 1.0 );
 
 	// Calculate diagonal that is black depending on built in x/y screen coordinates
