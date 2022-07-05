@@ -20,72 +20,72 @@ Window::~Window() {
 
 bool Window::Initialization( unsigned int width, unsigned int height,
     const char *title, bool secondary_window ) {
+    /**************************************************************************/
+    /*** Setup Main and Secondary Window the Same - Does not share context  ***/
+    /*** items                                                              ***/
+    /**************************************************************************/
+    if( glfwInit() == false ) {
+        print_error_message( "ERROR: EXIT EARLY: GLFW Initialization failed." );
+        glfwTerminate();
+        return false;
+    }
 
+    // Setup GLFW window properties with OpenGL version
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
+    // Core profile = No backwards compatibility and best performance
+    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+    // Allow forward compatiblity
+    glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+
+    //glfwWindowHint( GLFW_FOCUS_ON_SHOW, GLFW_TRUE );
+
+    m_pWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
+
+    if( !m_pWindow ) {
+        print_error_message( "ERROR: EXIT EARLY: GLFW main window creation failed." );
+        glfwTerminate();
+        return false;
+    }
+
+    // Get context for GLEW to use
+    glfwMakeContextCurrent( m_pWindow );
+
+    // Get buffer size information
+    glfwGetFramebufferSize( m_pWindow, &m_BufferWidth, &m_BufferHeight );
+
+    // Allow modern extension features
+    glewExperimental = GL_TRUE;
+
+    if( glewInit() != GLEW_OK ) {
+        print_error_message( "ERROR: EXIT EARLY: GLEW main window initialization failed." );
+        glfwDestroyWindow( m_pWindow );
+        glfwTerminate();
+        return false;
+    }
+
+    // Setup Viewport Size
+    glViewport( 0, 0, m_BufferWidth, m_BufferHeight );
+
+    // Clear all the keys
+    for( int i = 0; i < 1024; i++ ) {
+        m_bKeys[i] = false;
+    }
+
+    // Handle Keys
+    CreateCallbacks();
+
+    // Tell window to stay open
+    glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
+
+    // Lock current aspect ratio
+    glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
+
+    // Set window position
     if( secondary_window == false ) {
-        /**************************************************************************/
-        /*** Setup Main Window                                                  ***/
-        /**************************************************************************/
-        if( glfwInit() == false ) {
-            print_error_message( "ERROR: EXIT EARLY: GLFW Initialization failed." );
-            glfwTerminate();
-            return false;
-        }
-
-        // Setup GLFW window properties with OpenGL version
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-        // Core profile = No backwards compatibility and best performance
-        glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-        // Allow forward compatiblity
-        glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-
-        //glfwWindowHint( GLFW_FOCUS_ON_SHOW, GLFW_TRUE );
-
-        m_pWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
-
-        if( !m_pWindow ) {
-            print_error_message( "ERROR: EXIT EARLY: GLFW main window creation failed." );
-            glfwTerminate();
-            return false;
-        }
-
-        // Get context for GLEW to use
-        glfwMakeContextCurrent( m_pWindow );
-
-        // Get buffer size information
-        glfwGetFramebufferSize( m_pWindow, &m_BufferWidth, &m_BufferHeight );
-
-        // Allow modern extension features
-        glewExperimental = GL_TRUE;
-
-        if( glewInit() != GLEW_OK ) {
-            print_error_message( "ERROR: EXIT EARLY: GLEW main window initialization failed." );
-            glfwDestroyWindow( m_pWindow );
-            glfwTerminate();
-            return false;
-        }
-
-        // Setup Viewport Size
-        glViewport( 0, 0, m_BufferWidth, m_BufferHeight );
-
-        // Clear all the keys
-        for( int i = 0; i < 1024; i++ ) {
-            m_bKeys[i] = false;
-        }
-
-        // Handle Keys
-        CreateCallbacks();
-
-        // Tell window to stay open
-        glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
-
-        // Lock current aspect ratio
-        glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 1.2 ), int( m_BufferHeight * 0.5f ) );
     } else {
-        /**************************************************************************/
-        /*** Setup Secondary Window                                             ***/
-        /**************************************************************************/
-
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.5f ) );
     }
  
     return true;

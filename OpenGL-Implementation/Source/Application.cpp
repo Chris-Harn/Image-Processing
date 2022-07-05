@@ -47,7 +47,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Secondary Window failed to allocate on heap." );
         return false;
     }
-    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", false ) != true ) {
+    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", true ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
@@ -113,6 +113,7 @@ void Application::Render() {
     g_pQuad->RenderQuad();
 
     g_pMainWindow->SwapBuffers();
+
 
     /*******************************************************/
     // Render Secondary Window
