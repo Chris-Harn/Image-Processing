@@ -3,7 +3,6 @@
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "OpenGL\ResourceManager.h"
-#include "Gui.h"
 #include "Timer.h"
 #include "Utility.h"
 
@@ -110,7 +109,7 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
     // Blit that image onto its window
-    ResourceManager::GetShader( "BlitImage" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad->RenderQuad();
 
     g_pMainWindow->SwapBuffers();
