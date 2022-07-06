@@ -19,7 +19,7 @@ Window::~Window() {
 }
 
 bool Window::Initialization( unsigned int width, unsigned int height,
-    const char *title, bool secondary_window ) {
+    const char *title, bool secondary_window, GLFWwindow *firstWindow ) {
     /**************************************************************************/
     /*** Setup Main and Secondary Window the Same - Does not share context  ***/
     /*** items                                                              ***/
@@ -41,7 +41,7 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     // Lock current aspect ratio - Must be before window creation
     glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
-    m_pWindow = glfwCreateWindow( width, height, title, nullptr, nullptr );
+    m_pWindow = glfwCreateWindow( width, height, title, nullptr, firstWindow );
 
     if( !m_pWindow ) {
         print_error_message( "ERROR: EXIT EARLY: GLFW main window creation failed." );

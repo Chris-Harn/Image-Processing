@@ -3,6 +3,7 @@
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "OpenGL\ResourceManager.h"
+
 #include "Timer.h"
 #include "Utility.h"
 
@@ -23,7 +24,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Main Window failed to allocate on heap." );
         return false;
     }
-    if( g_pMainWindow->Initialization( window_width, window_height, title, false ) != true) {
+    if( g_pMainWindow->Initialization( window_width, window_height, title, false, nullptr ) != true) {
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
@@ -35,6 +36,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     }
 
     // Load Shaders, framebuffers, and other resources... for OpenGL Context #1
+    // Note: FBO's and VBO's are not shared between OpenGL contexts
     ResourceManager::LoadShader( "Resource/Shaders/Error/CautionStrips.glsl", "CautionImage" );
     ResourceManager::CreateFramebuffer( window_width, window_height, "OriginalVideo" );
 
@@ -47,7 +49,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Secondary Window failed to allocate on heap." );
         return false;
     }
-    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", true ) != true ) {
+    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", true, g_pMainWindow->GetWindow() ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
@@ -57,14 +59,6 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Quad #2 failed to allocate on heap." );
         return false;
     }
-
-    // Load Shaders, framebuffers, and other resources... for OpenGL Context #2
-    // Note: Seperate OpenGL Contexts each need their own shaders
-    ResourceManager::LoadShader( "Resource/Shaders/Error/CautionStrips.glsl", "CautionImageTest" );
-    ResourceManager::CreateFramebuffer( window_width, window_height, "OriginalVideoPlayback" );
-
-    ResourceManager::LoadShader( "Resource/Shaders/BasicBlit.glsl", "BlitImagePlayback" );
-    ResourceManager::GetShader( "BlitImagePlayback" )->SetInteger( "u_Texture", 0, true );
 
     // Switch OpenGL Context back so can render correctly on both windows
     g_pMainWindow->MakeCurrentContext();
@@ -114,22 +108,15 @@ void Application::Render() {
 
     g_pMainWindow->SwapBuffers();
 
-
     /*******************************************************/
     // Render Secondary Window
     /*******************************************************/
     g_pSecondaryWindow->MakeCurrentContext();
     g_pSecondaryWindow->ClearColorBuffer();
 
-    // Capture input frame into texture
-    ResourceManager::GetFramebuffer( "OriginalVideoPlayback" )->Bind();
-    ResourceManager::GetShader( "CautionImageTest" )->Use();
-    g_pQuad2->RenderQuad();
-    ResourceManager::GetFramebuffer( "OriginalVideoPlayback" )->Unbind();
-    ResourceManager::GetFramebuffer( "OriginalVideoPlayback" )->BindTexture( 0 );
-
-    // Blit Original Video onto second window
-    ResourceManager::GetShader( "BlitImagePlayback" )->Use();
+    // Blit Original Video onto second window for comparison playback
+    ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
+    ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad2->RenderQuad();
 
     g_pSecondaryWindow->SwapBuffers();

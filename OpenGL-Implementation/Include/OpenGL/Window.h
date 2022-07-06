@@ -9,9 +9,10 @@ public:
     Window();
     ~Window();
     bool Initialization( unsigned int width,
-                         unsigned int height, 
-                         const char* title, 
-                         bool secondary_window );
+                         unsigned int height,
+                         const char *title,
+                         bool secondary_window, 
+                         GLFWwindow *firstWindow );
     float GetBufferWidth() { return (float)m_BufferWidth; }
     float GetBufferHeight() { return (float)m_BufferHeight; }
     bool GetShouldClose() { return glfwWindowShouldClose( m_pWindow ); }
