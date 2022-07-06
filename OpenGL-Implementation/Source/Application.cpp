@@ -3,9 +3,13 @@
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "OpenGL\ResourceManager.h"
-
 #include "Timer.h"
 #include "Utility.h"
+
+// Placeholder GUI code
+#include "ImGui\imgui.h"
+#include "ImGui\imgui_impl_glfw.h"
+#include "ImGui\imgui_impl_opengl3.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
