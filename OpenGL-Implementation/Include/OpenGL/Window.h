@@ -11,7 +11,7 @@ public:
     bool Initialization( unsigned int width,
                          unsigned int height,
                          const char *title,
-                         bool secondary_window, 
+                         unsigned int windowNumber, 
                          GLFWwindow *firstWindow );
     float GetBufferWidth() { return (float)m_BufferWidth; }
     float GetBufferHeight() { return (float)m_BufferHeight; }

@@ -9,6 +9,7 @@
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
+Window *g_pGUIWindow = nullptr;
 Quad *g_pQuad = nullptr;
 Quad *g_pQuad2 = nullptr;
 GUI *g_pGUI = nullptr;
@@ -25,7 +26,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Main Window failed to allocate on heap." );
         return false;
     }
-    if( g_pMainWindow->Initialization( window_width, window_height, title, false, nullptr ) != true) {
+    if( g_pMainWindow->Initialization( window_width, window_height, title, 0, nullptr ) != true) {
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
@@ -50,7 +51,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Secondary Window failed to allocate on heap." );
         return false;
     }
-    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", true, g_pMainWindow->GetWindow() ) != true ) {
+    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", 1, g_pMainWindow->GetWindow() ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
@@ -58,6 +59,17 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Quad #2 failed to allocate on heap." );
+        return false;
+    }
+
+    try { g_pGUIWindow = new Window(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: GUI Window failed to allocate on heap." );
+        return false;
+    }
+    if( g_pGUIWindow->Initialization( 900, 200, "Video Controls", 2, g_pGUIWindow->GetWindow() ) != true ) {
+        print_error_message( "ERROR: EXIT EARLY: GUI window failed to initalize." );
         return false;
     }
 
@@ -90,7 +102,8 @@ void Application::ProcessInput() {
 
     // If Window #1 or Window #2 close... exit the program
     if( ( g_pMainWindow->GetShouldClose() ) ||
-        ( g_pSecondaryWindow->GetShouldClose() ) ) AppRunning = false;
+        ( g_pSecondaryWindow->GetShouldClose() ) ||
+        ( g_pGUIWindow->GetShouldClose() ) ) AppRunning = false;
 }
 
 void Application::Update() {
@@ -104,8 +117,6 @@ void Application::Render() {
     g_pMainWindow->MakeCurrentContext();
     g_pMainWindow->ClearColorBuffer();
 
-    g_pGUI->StartFrame();
-
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
     ResourceManager::GetShader( "CautionImage" )->Use();
@@ -116,8 +127,6 @@ void Application::Render() {
     // Blit that image onto its window
     ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad->RenderQuad();
-
-    g_pGUI->DrawGui();
 
     g_pMainWindow->SwapBuffers();
 
@@ -133,6 +142,17 @@ void Application::Render() {
     g_pQuad2->RenderQuad();
 
     g_pSecondaryWindow->SwapBuffers();
+
+    /*******************************************************/
+    // Render GUI Window
+    /*******************************************************/
+    g_pGUIWindow->MakeCurrentContext();
+    g_pGUIWindow->ClearColorBuffer();
+
+    g_pGUI->StartFrame();
+    g_pGUI->DrawGui();
+
+    g_pGUIWindow->SwapBuffers();
 
     /*******************************************************/
     // Final Actions for Loop

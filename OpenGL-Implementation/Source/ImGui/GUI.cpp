@@ -33,7 +33,7 @@ void GUI::StartFrame() {
 }
 
 void GUI::DrawGui() {
-    ImGui::Begin( "GUI is created." );
+    ImGui::Begin( "GUI is created.", NULL );
     ImGui::Text( "Gui is working." );
     ImGui::End();
 

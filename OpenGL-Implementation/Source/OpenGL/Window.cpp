@@ -19,7 +19,7 @@ Window::~Window() {
 }
 
 bool Window::Initialization( unsigned int width, unsigned int height,
-    const char *title, bool secondary_window, GLFWwindow *firstWindow ) {
+    const char *title, unsigned int windowNumber, GLFWwindow *firstWindow ) {
     /**************************************************************************/
     /*** Setup Main and Secondary Window the Same - Does not share context  ***/
     /*** items                                                              ***/
@@ -80,10 +80,15 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
 
     // Set window position
-    if( secondary_window == false ) {
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 1.2 ), int( m_BufferHeight * 0.5f ) );
+    if( windowNumber == 0 ) {
+        // Main Window
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 1.2 ), int( m_BufferHeight * 0.7f ) );
+    } else if( windowNumber == 1) {
+        // Playback Window
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.7f ) );
     } else {
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.5f ) );
+        // GUI
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.4f ) );
     }
  
     return true;
