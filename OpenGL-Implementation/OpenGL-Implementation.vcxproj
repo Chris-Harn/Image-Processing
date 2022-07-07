@@ -120,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External_Dependances\DearIMGui\x64\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +137,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(SolutionDir)\External_Dependances\DearIMGui\x64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,10 +148,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ImGui\GUI.cpp" />
     <ClCompile Include="Source\ImGui\imgui.cpp" />
     <ClCompile Include="Source\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Source\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Source\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Source\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Source\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Source\OpenGL\Framebuffer.cpp" />
@@ -165,6 +169,7 @@
     <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\ImGui\GUI.h" />
     <ClInclude Include="Include\Application.h" />
     <ClInclude Include="Include\ImGui\imconfig.h" />
     <ClInclude Include="Include\ImGui\imgui.h" />

@@ -3,18 +3,15 @@
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "OpenGL\ResourceManager.h"
+#include "ImGUI\GUI.h" 
 #include "Timer.h"
 #include "Utility.h"
-
-// Placeholder GUI code
-#include "ImGui\imgui.h"
-#include "ImGui\imgui_impl_glfw.h"
-#include "ImGui\imgui_impl_opengl3.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
 Quad *g_pQuad = nullptr;
 Quad *g_pQuad2 = nullptr;
+GUI *g_pGUI = nullptr;
 Timer *g_pAppTimer = nullptr;
 
 Application::Application() : AppRunning(true) {
@@ -67,6 +64,14 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     // Switch OpenGL Context back so can render correctly on both windows
     g_pMainWindow->MakeCurrentContext();
 
+    try { g_pGUI = new GUI(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: GUI failed to allocate on heap." );
+        return false;
+    }
+    g_pGUI->Initialization( g_pMainWindow->GetWindow() );
+
     try{ g_pAppTimer = new Timer(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -99,6 +104,8 @@ void Application::Render() {
     g_pMainWindow->MakeCurrentContext();
     g_pMainWindow->ClearColorBuffer();
 
+    g_pGUI->StartFrame();
+
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
     ResourceManager::GetShader( "CautionImage" )->Use();
@@ -109,6 +116,8 @@ void Application::Render() {
     // Blit that image onto its window
     ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad->RenderQuad();
+
+    g_pGUI->DrawGui();
 
     g_pMainWindow->SwapBuffers();
 
@@ -133,14 +142,13 @@ void Application::Render() {
 
 void Application::CleanUp() {
     // Clean up in reverse order created
+    ResourceManager::CleanUp();
     if( g_pAppTimer != nullptr ) delete g_pAppTimer; g_pAppTimer = nullptr;
+    if( g_pGUI != nullptr ) delete g_pGUI; g_pGUI = nullptr;
     if( g_pQuad2 != nullptr ) delete g_pQuad2; g_pQuad2 = nullptr;
     if( g_pQuad != nullptr ) delete g_pQuad; g_pQuad = nullptr;
     if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow; g_pSecondaryWindow = nullptr;
     if( g_pMainWindow != nullptr ) delete g_pMainWindow; g_pMainWindow = nullptr;
-
-    // Get rid of all shaders and textures
-    ResourceManager::CleanUp();
 
     print_message( "Program finished without issue." );
 }

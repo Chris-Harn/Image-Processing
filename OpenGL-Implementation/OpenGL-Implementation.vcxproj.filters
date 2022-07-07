@@ -57,26 +57,32 @@
     <ClCompile Include="Source\OpenGL\Texture.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ImGui\imgui.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ImGui\imgui_demo.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ImGui\imgui_draw.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ImGui\imgui_impl_glfw.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ImGui\imgui_tables.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ImGui\imgui_widgets.cpp">
-      <Filter>Source Files\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="Source\OpenGL\Window.cpp">
       <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\GUI.cpp">
+      <Filter>Source Files\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui_impl_glfw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImGui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,32 +116,35 @@
     <ClInclude Include="Include\OpenGL\Window.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Include\ImGui\imgui.h">
-      <Filter>Header Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ImGui\imgui_impl_glfw.h">
-      <Filter>Header Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ImGui\imgui_impl_opengl3.h">
-      <Filter>Header Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ImGui\imgui_impl_opengl3_loader.h">
-      <Filter>Header Files\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\ImGui\imgui_internal.h">
+    <ClInclude Include="Include\ImGui\GUI.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Include\ImGui\imconfig.h">
-      <Filter>Header Files\ImGui</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGui\imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGui\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGui\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ImGui\imgui_internal.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\ImGui\imstb_rectpack.h">
-      <Filter>Header Files\ImGui</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\ImGui\imstb_textedit.h">
-      <Filter>Header Files\ImGui</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\ImGui\imstb_truetype.h">
-      <Filter>Header Files\ImGui</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
