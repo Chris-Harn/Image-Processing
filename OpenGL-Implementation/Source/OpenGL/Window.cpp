@@ -127,16 +127,16 @@ void Window::HandleKeys( GLFWwindow *window, int key, int code, int action, int 
     //if( key == GLFW_KEY_Z ) StepBackwards();
     //if( key == GLFW_KEY_X ) StepForwards();
 
-    if( ( key >= 0 ) && ( key < 1024 ) ) {
-        if( action == GLFW_PRESS ) {
-            theWindow->m_bKeys[key] = true;
-            printf( "Pressed: %d\n", key );
-        }
-        else if( action == GLFW_RELEASE ) {
-            theWindow->m_bKeys[key] = false;
-            printf( "Released: %d\n", key );
-        }
-    }
+    //if( ( key >= 0 ) && ( key < 1024 ) ) {
+    //    if( action == GLFW_PRESS ) {
+    //        theWindow->m_bKeys[key] = true;
+    //        printf( "Pressed: %d\n", key );
+    //    }
+    //    else if( action == GLFW_RELEASE ) {
+    //        theWindow->m_bKeys[key] = false;
+    //        printf( "Released: %d\n", key );
+    //    }
+    //}
 }
 
 void Window::HandleFramebufferResize( GLFWwindow *window, int width, int height ) {

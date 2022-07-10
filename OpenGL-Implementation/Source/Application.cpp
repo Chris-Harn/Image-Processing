@@ -6,6 +6,7 @@
 #include "ImGUI\GUI.h" 
 #include "Timer.h"
 #include "Utility.h"
+#include "Controls.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
@@ -14,6 +15,7 @@ Quad *g_pQuad = nullptr;
 Quad *g_pQuad2 = nullptr;
 GUI *g_pGUI = nullptr;
 Timer *g_pAppTimer = nullptr;
+ShaderControls g_ShaderControls;
 
 Application::Application() : AppRunning(true) {
 
@@ -44,6 +46,12 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
 
     ResourceManager::LoadShader( "Resource/Shaders/BasicBlit.glsl", "BlitImage" );
     ResourceManager::GetShader( "BlitImage" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "InputImage" );
+
+    ResourceManager::LoadShader( "Resource/Shaders/GammaLUT.glsl", "GammaLUT" );
+    ResourceManager::GetShader( "GammaLUT" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "GammaInput" );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "GammaOutput" );
 
     try { g_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
@@ -68,7 +76,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: GUI Window failed to allocate on heap." );
         return false;
     }
-    if( g_pGUIWindow->Initialization( 900, 200, "Video Controls", 2, g_pGUIWindow->GetWindow() ) != true ) {
+    if( g_pGUIWindow->Initialization( 900, 200, "Video Controls", 2, g_pMainWindow->GetWindow() ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: GUI window failed to initalize." );
         return false;
     }
@@ -82,7 +90,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: GUI failed to allocate on heap." );
         return false;
     }
-    g_pGUI->Initialization( g_pMainWindow->GetWindow() );
+    g_pGUI->Initialization( g_pGUIWindow->GetWindow() );
 
     try{ g_pAppTimer = new Timer(); }
     catch( const std::bad_alloc &e ) {
@@ -92,15 +100,27 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     }
     g_pAppTimer->Start( video_fps );
 
+    // Setp controls with default values
+    g_ShaderControls.m_inputGamma = 1.0f;
+    g_ShaderControls.m_outputGamma = 1.0f;
+
     print_message( "Program started without issue." );
 
     return true;
 }
 
 void Application::ProcessInput() {
+    g_pMainWindow->MakeCurrentContext();
     g_pMainWindow->PollEvents();
 
-    // If Window #1 or Window #2 close... exit the program
+    g_pSecondaryWindow->MakeCurrentContext();
+    g_pSecondaryWindow->PollEvents();
+
+    g_pGUIWindow->MakeCurrentContext();
+    g_pGUI->StartFrame();
+    g_pGUI->DrawGui( g_ShaderControls );
+
+    // If any window should close... exit the program
     if( ( g_pMainWindow->GetShouldClose() ) ||
         ( g_pSecondaryWindow->GetShouldClose() ) ||
         ( g_pGUIWindow->GetShouldClose() ) ) AppRunning = false;
@@ -124,7 +144,20 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
-    // Blit that image onto its window
+    // Update input gamma
+    ResourceManager::GetFramebuffer( "GammaInput" )->Bind();
+    ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_inputGamma, true );
+    g_pQuad->RenderQuad();
+    ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
+    ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
+
+    // Update output gamma
+    ResourceManager::GetFramebuffer( "GammaOutput" )->Bind();
+    ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_outputGamma, true );
+    g_pQuad->RenderQuad();
+    ResourceManager::GetFramebuffer( "GammaOutput" )->Unbind();
+    ResourceManager::GetFramebuffer( "GammaOutput" )->BindTexture( 0 );
+
     ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad->RenderQuad();
 
@@ -148,9 +181,7 @@ void Application::Render() {
     /*******************************************************/
     g_pGUIWindow->MakeCurrentContext();
     g_pGUIWindow->ClearColorBuffer();
-
-    g_pGUI->StartFrame();
-    g_pGUI->DrawGui();
+    g_pGUI->Draw();
 
     g_pGUIWindow->SwapBuffers();
 

@@ -32,11 +32,14 @@ void GUI::StartFrame() {
     ImGui::NewFrame();
 }
 
-void GUI::DrawGui() {
+void GUI::DrawGui( ShaderControls &g_ShaderControls ) {
     ImGui::Begin( "GUI is created.", NULL );
-    ImGui::Text( "Gui is working." );
+    ImGui::SliderFloat( "Input Gamma", &g_ShaderControls.m_inputGamma, 0.01f, 4.0f );
+    ImGui::SliderFloat( "Output Gamma", &g_ShaderControls.m_outputGamma, 0.01f, 4.0f );
     ImGui::End();
+}
 
+void GUI::Draw() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
 }
