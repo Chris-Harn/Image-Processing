@@ -75,25 +75,31 @@ void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
         }
         ImGui::EndMenuBar();
     }
-    ImGui::LabelText( "Stage 1", "Input Gamma" );
-    ImGui::Checkbox( "On/Off Input Gamma", &g_ShaderControls.m_binputGamma );
-    ImGui::SameLine();
-    if( ImGui::Button( "Reset Input Gamma" ) ) {
-        g_ShaderControls.m_inputGamma = 1.0f;
-    }
-    ImGui::SliderFloat( "Input Gamma", &g_ShaderControls.m_inputGamma, 0.01f, 4.0f );
-    ImGui::Separator();
 
-    ImGui::LabelText( "Stage X", "Output Gamma" );
-    ImGui::Checkbox( "On/Off Output Gamma", &g_ShaderControls.m_boutputGamma );
-    ImGui::SameLine();
-    if( ImGui::Button( "Reset Output Gamma" ) ) {
-        g_ShaderControls.m_outputGamma = 1.0f;
+    if( ImGui::CollapsingHeader( "Shaders" ) ) {
+        ImGui::LabelText( "Stage 1", "Input Gamma" );
+        ImGui::Checkbox( "On/Off Input Gamma", &g_ShaderControls.m_binputGamma );
+        ImGui::SameLine();
+        if( ImGui::Button( "Reset Input Gamma" ) ) {
+            g_ShaderControls.m_inputGamma = 1.0f;
+        }
+        ImGui::SliderFloat( "Input Gamma", &g_ShaderControls.m_inputGamma, 0.01f, 4.0f );
+        ImGui::Separator();
+
+        ImGui::LabelText( "Stage XX", "Output Gamma" );
+        ImGui::Checkbox( "On/Off Output Gamma", &g_ShaderControls.m_boutputGamma );
+        ImGui::SameLine();
+        if( ImGui::Button( "Reset Output Gamma" ) ) {
+            g_ShaderControls.m_outputGamma = 1.0f;
+        }
+        ImGui::SliderFloat( "Output Gamma", &g_ShaderControls.m_outputGamma, 0.01f, 4.0f );
+        ImGui::Separator();
     }
-    ImGui::SliderFloat( "Output Gamma", &g_ShaderControls.m_outputGamma, 0.01f, 4.0f );
-    ImGui::Separator();
-    
+
     ImGui::End();
+
+    // Examples - Placeholder - Remove
+    //ImGui::ShowDemoWindow();
 }
 
 void GUI::Draw() {
