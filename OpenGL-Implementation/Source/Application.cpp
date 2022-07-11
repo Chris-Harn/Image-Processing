@@ -76,7 +76,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: GUI Window failed to allocate on heap." );
         return false;
     }
-    if( g_pGUIWindow->Initialization( 900, 200, "Video Controls", 2, g_pMainWindow->GetWindow() ) != true ) {
+    if( g_pGUIWindow->Initialization( 500, 600, "Video Controls", 2, nullptr ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: GUI window failed to initalize." );
         return false;
     }
@@ -117,8 +117,7 @@ void Application::ProcessInput() {
     g_pSecondaryWindow->PollEvents();
 
     g_pGUIWindow->MakeCurrentContext();
-    g_pGUI->StartFrame();
-    g_pGUI->DrawGui( g_ShaderControls );
+    g_pGUI->PollGuiEvents( g_ShaderControls );
 
     // If any window should close... exit the program
     if( ( g_pMainWindow->GetShouldClose() ) ||
@@ -145,18 +144,22 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
     // Update input gamma
-    ResourceManager::GetFramebuffer( "GammaInput" )->Bind();
-    ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_inputGamma, true );
-    g_pQuad->RenderQuad();
-    ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
-    ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
+    if( g_ShaderControls.m_binputGamma == true ) {
+        ResourceManager::GetFramebuffer( "GammaInput" )->Bind();
+        ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_inputGamma, true );
+        g_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
+        ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
+    }
 
     // Update output gamma
-    ResourceManager::GetFramebuffer( "GammaOutput" )->Bind();
-    ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_outputGamma, true );
-    g_pQuad->RenderQuad();
-    ResourceManager::GetFramebuffer( "GammaOutput" )->Unbind();
-    ResourceManager::GetFramebuffer( "GammaOutput" )->BindTexture( 0 );
+    if( g_ShaderControls.m_boutputGamma == true ) {
+        ResourceManager::GetFramebuffer( "GammaOutput" )->Bind();
+        ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_outputGamma, true );
+        g_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "GammaOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "GammaOutput" )->BindTexture( 0 );
+    }
 
     ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad->RenderQuad();

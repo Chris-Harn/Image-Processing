@@ -26,14 +26,21 @@ void GUI::Initialization( GLFWwindow *mainWindow ) {
     ImGui_ImplOpenGL3_Init( "#version 450 core" );
 }
 
-void GUI::StartFrame() {
+void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-}
 
-void GUI::DrawGui( ShaderControls &g_ShaderControls ) {
-    ImGui::Begin( "Image Processing.", NULL, ImGuiWindowFlags_MenuBar );
+    // Set viewport to be full size of window
+    const ImGuiViewport *main_viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos( ImVec2( main_viewport->WorkPos.x, main_viewport->WorkPos.y ), ImGuiCond_FirstUseEver );
+    ImGui::SetNextWindowSize( ImVec2( main_viewport->Size.x, main_viewport->Size.y ), ImGuiCond_FirstUseEver );
+
+    ImGui::Begin( "Image Processing.", NULL, ImGuiWindowFlags_MenuBar | 
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | 
+        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | 
+        ImGuiWindowFlags_NoTitleBar );
     if( ImGui::BeginMenuBar() ) {
         if( ImGui::BeginMenu( "File" ) ) {
             if( ImGui::MenuItem( "Load File" ) ) {
@@ -58,8 +65,24 @@ void GUI::DrawGui( ShaderControls &g_ShaderControls ) {
         }
         ImGui::EndMenuBar();
     }
+    ImGui::LabelText( "Stage 1", "Input Gamma" );
+    ImGui::Checkbox( "On/Off Input Gamma", &g_ShaderControls.m_binputGamma );
+    ImGui::SameLine();
+    if( ImGui::Button( "Reset Input Gamma" ) ) {
+        g_ShaderControls.m_inputGamma = 1.0f;
+    }
     ImGui::SliderFloat( "Input Gamma", &g_ShaderControls.m_inputGamma, 0.01f, 4.0f );
+    ImGui::Separator();
+
+    ImGui::LabelText( "Stage X", "Output Gamma" );
+    ImGui::Checkbox( "On/Off Output Gamma", &g_ShaderControls.m_boutputGamma );
+    ImGui::SameLine();
+    if( ImGui::Button( "Reset Output Gamma" ) ) {
+        g_ShaderControls.m_outputGamma = 1.0f;
+    }
     ImGui::SliderFloat( "Output Gamma", &g_ShaderControls.m_outputGamma, 0.01f, 4.0f );
+    ImGui::Separator();
+    
     ImGui::End();
 }
 
