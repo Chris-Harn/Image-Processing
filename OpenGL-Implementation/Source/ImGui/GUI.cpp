@@ -46,19 +46,25 @@ void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | 
         ImGuiWindowFlags_NoTitleBar );
     if( ImGui::BeginMenuBar() ) {
-        if( ImGui::BeginMenu( "File" ) ) {
-            if( ImGui::MenuItem( "Load File" ) ) {
+        if( ImGui::BeginMenu( "Video" ) ) {
+            if( ImGui::MenuItem( "Load" ) ) {
 
             }
-            if( ImGui::MenuItem( "Save File" ) ) {
+            if( ImGui::MenuItem( "Save" ) ) {
 
             }
-            if( ImGui::MenuItem( "Close Program" ) ) {
-
+            if( ImGui::MenuItem( "Close" ) ) {
+                g_ShaderControls.m_bcloseProgram = true;
             }
             ImGui::EndMenu();
         }
         if( ImGui::BeginMenu( "Setting" ) ) {
+            if( ImGui::MenuItem( "Load" ) ) {
+
+            }
+            if( ImGui::MenuItem( "Save" ) ) {
+
+            }
             ImGui::EndMenu();
         }
         if( ImGui::BeginMenu( "Help" ) ) {

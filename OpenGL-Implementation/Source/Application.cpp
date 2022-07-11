@@ -122,7 +122,8 @@ void Application::ProcessInput() {
     // If any window should close... exit the program
     if( ( g_pMainWindow->GetShouldClose() ) ||
         ( g_pSecondaryWindow->GetShouldClose() ) ||
-        ( g_pGUIWindow->GetShouldClose() ) ) AppRunning = false;
+        ( g_pGUIWindow->GetShouldClose() ) ||
+        ( g_ShaderControls.m_bcloseProgram == true ) ) AppRunning = false;
 }
 
 void Application::Update() {

@@ -2,6 +2,7 @@
 #define __CONTROL_H__
 
 struct ShaderControls {
+    bool m_bcloseProgram;
     bool m_binputGamma;
     float m_inputGamma;
 
