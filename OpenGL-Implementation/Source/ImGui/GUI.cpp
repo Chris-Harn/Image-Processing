@@ -7,6 +7,8 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+ImGuiViewport *g_pMainViewport;
+
 GUI::GUI() {
 
 }
@@ -24,6 +26,9 @@ void GUI::Initialization( GLFWwindow *mainWindow ) {
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL( mainWindow, true );
     ImGui_ImplOpenGL3_Init( "#version 450 core" );
+
+    // Get window size to make ImGui fullsize
+    g_pMainViewport = ImGui::GetMainViewport();
 }
 
 void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
@@ -32,11 +37,10 @@ void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
     ImGui::NewFrame();
 
     // Set viewport to be full size of window
-    const ImGuiViewport *main_viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos( ImVec2( main_viewport->WorkPos.x, main_viewport->WorkPos.y ), ImGuiCond_FirstUseEver );
-    ImGui::SetNextWindowSize( ImVec2( main_viewport->Size.x, main_viewport->Size.y ), ImGuiCond_FirstUseEver );
+    ImGui::SetNextWindowPos( ImVec2( g_pMainViewport->WorkPos.x, g_pMainViewport->WorkPos.y ), ImGuiCond_FirstUseEver );
+    ImGui::SetNextWindowSize( ImVec2( g_pMainViewport->Size.x, g_pMainViewport->Size.y ), ImGuiCond_FirstUseEver );
 
-    ImGui::Begin( "Image Processing.", NULL, ImGuiWindowFlags_MenuBar | 
+    ImGui::Begin( "Video Controls", NULL, ImGuiWindowFlags_MenuBar | 
         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | 
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | 
         ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | 
