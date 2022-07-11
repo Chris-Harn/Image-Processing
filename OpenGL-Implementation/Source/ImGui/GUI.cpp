@@ -33,7 +33,31 @@ void GUI::StartFrame() {
 }
 
 void GUI::DrawGui( ShaderControls &g_ShaderControls ) {
-    ImGui::Begin( "GUI is created.", NULL );
+    ImGui::Begin( "Image Processing.", NULL, ImGuiWindowFlags_MenuBar );
+    if( ImGui::BeginMenuBar() ) {
+        if( ImGui::BeginMenu( "File" ) ) {
+            if( ImGui::MenuItem( "Load File" ) ) {
+
+            }
+            if( ImGui::MenuItem( "Save File" ) ) {
+
+            }
+            if( ImGui::MenuItem( "Close Program" ) ) {
+
+            }
+            ImGui::EndMenu();
+        }
+        if( ImGui::BeginMenu( "Setting" ) ) {
+            ImGui::EndMenu();
+        }
+        if( ImGui::BeginMenu( "Help" ) ) {
+            if( ImGui::MenuItem( "About Program" ) ) {
+
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
     ImGui::SliderFloat( "Input Gamma", &g_ShaderControls.m_inputGamma, 0.01f, 4.0f );
     ImGui::SliderFloat( "Output Gamma", &g_ShaderControls.m_outputGamma, 0.01f, 4.0f );
     ImGui::End();
