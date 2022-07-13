@@ -7,6 +7,7 @@
 #include "Timer.h"
 #include "Utility.h"
 #include "Controls.h"
+#include "VideoLoader.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
@@ -15,6 +16,7 @@ Quad *g_pQuad = nullptr;
 Quad *g_pQuad2 = nullptr;
 GUI *g_pGUI = nullptr;
 Timer *g_pAppTimer = nullptr;
+VideoLoader *g_pVideoLoader = nullptr;
 ShaderControls g_ShaderControls;
 
 Application::Application() : AppRunning(true) {
@@ -99,6 +101,16 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         return false;
     }
     g_pAppTimer->Start( video_fps );
+
+    try { g_pVideoLoader = new VideoLoader(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: Video Loader failed to allocate on heap." );
+        return false;
+    }
+    
+    // Placeholder till can get GUI to load
+    g_pVideoLoader->LoadNewVideo( "../../VHS_1980.avi", "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
 
     // Setp controls with default values
     g_ShaderControls.m_inputGamma = 1.0f;

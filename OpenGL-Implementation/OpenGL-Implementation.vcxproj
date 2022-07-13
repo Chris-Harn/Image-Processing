@@ -168,6 +168,8 @@
     <ClCompile Include="Source\OpenGL\Quad.cpp" />
     <ClCompile Include="Source\OpenGL\Window.cpp" />
     <ClCompile Include="Source\Timer.cpp" />
+    <ClCompile Include="Source\VideoLoader.cpp" />
+    <ClCompile Include="Source\VideoPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Controls.h" />
@@ -182,6 +184,8 @@
     <ClInclude Include="Include\stb_image.h" />
     <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Include\Utility.h" />
+    <ClInclude Include="Include\VideoLoader.h" />
+    <ClInclude Include="Include\VideoPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shaders\BasicBlit.glsl" />

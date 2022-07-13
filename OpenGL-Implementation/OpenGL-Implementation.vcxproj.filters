@@ -66,6 +66,12 @@
     <ClCompile Include="Source\ImGui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\VideoPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\VideoLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\ImGui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -122,6 +128,12 @@
     <ClInclude Include="Include\Controls.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\VideoPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\VideoLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shaders\BasicBlit.glsl">
@@ -130,6 +142,8 @@
     <None Include="Resource\Shaders\Error\CautionStrips.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resource\Shaders\GammaLUT.glsl" />
+    <None Include="Resource\Shaders\GammaLUT.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
