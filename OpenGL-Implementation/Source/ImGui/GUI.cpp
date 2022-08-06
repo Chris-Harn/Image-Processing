@@ -75,6 +75,10 @@ void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
         }
         ImGui::EndMenuBar();
     }
+    if( ImGui::CollapsingHeader( "Image Orientation" ) ) {
+        ImGui::Checkbox( "Flip Horizontal Image", &g_ShaderControls.m_bflipHorizontal );
+        ImGui::Checkbox( "Flip Veritical Image", &g_ShaderControls.m_bflipVertical );
+    }
 
     if( ImGui::CollapsingHeader( "Shaders" ) ) {
         ImGui::LabelText( "Stage 1", "Input Gamma" );

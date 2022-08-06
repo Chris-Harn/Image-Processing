@@ -8,6 +8,7 @@
 #include "Utility.h"
 #include "Controls.h"
 #include "VideoLoader.h"
+#include "VideoPlayer.h"
 
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
@@ -17,6 +18,7 @@ Quad *g_pQuad2 = nullptr;
 GUI *g_pGUI = nullptr;
 Timer *g_pAppTimer = nullptr;
 VideoLoader *g_pVideoLoader = nullptr;
+VideoPlayer *g_pVideoPlayer = nullptr;
 ShaderControls g_ShaderControls;
 
 Application::Application() : AppRunning(true) {
@@ -49,6 +51,9 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::LoadShader( "Resource/Shaders/BasicBlit.glsl", "BlitImage" );
     ResourceManager::GetShader( "BlitImage" )->SetInteger( "u_Texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "InputImage" );
+
+    ResourceManager::LoadShader( "Resource/Shaders/FlipImage.glsl", "FlipImage" );
+    ResourceManager::GetShader( "FlipImage" )->SetInteger( "u_Texture", 0, true );
 
     ResourceManager::LoadShader( "Resource/Shaders/GammaLUT.glsl", "GammaLUT" );
     ResourceManager::GetShader( "GammaLUT" )->SetInteger( "u_Texture", 0, true );
@@ -109,8 +114,20 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         return false;
     }
     
-    // Placeholder till can get GUI to load
+    // Placeholder till can get GUI to load - Add to update function
     g_pVideoLoader->LoadNewVideo( "../../VHS_1980.avi", "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
+
+    try { g_pVideoPlayer = new VideoPlayer(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: Video Player failed to allocate on heap." );
+        return false;
+    }
+
+    // Placeholder till can get GUI to control
+    g_pVideoPlayer->ReadyCommand(); // Tells player something is loaded
+    g_pVideoPlayer->PlayCommand(); 
+    bool test = g_pVideoPlayer->CurrentlyPlaying();
 
     // Setp controls with default values
     g_ShaderControls.m_inputGamma = 1.0f;
@@ -151,7 +168,18 @@ void Application::Render() {
 
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
-    ResourceManager::GetShader( "CautionImage" )->Use();
+    if(g_pVideoPlayer->CurrentlyPlaying() == true ) {
+        // Grab frame from video and process it
+        g_pVideoLoader->GrabFrameFromVideo();
+        g_pVideoLoader->BindTexture( 0 );
+        ResourceManager::GetShader( "FlipImage" )->Use();
+        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ShaderControls.m_bflipVertical );
+        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipHorizontal", g_ShaderControls.m_bflipHorizontal );
+    } else {
+        // Display static image on any size window
+        ResourceManager::GetShader( "CautionImage" )->Use();
+    }
+
     g_pQuad->RenderQuad();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
@@ -210,6 +238,9 @@ void Application::Render() {
 void Application::CleanUp() {
     // Clean up in reverse order created
     ResourceManager::CleanUp();
+
+    if( g_pVideoPlayer != nullptr ) delete g_pVideoPlayer; g_pVideoPlayer = nullptr;
+    if( g_pVideoLoader != nullptr ) delete g_pVideoLoader; g_pVideoLoader = nullptr;
     if( g_pAppTimer != nullptr ) delete g_pAppTimer; g_pAppTimer = nullptr;
     if( g_pGUI != nullptr ) delete g_pGUI; g_pGUI = nullptr;
     if( g_pQuad2 != nullptr ) delete g_pQuad2; g_pQuad2 = nullptr;

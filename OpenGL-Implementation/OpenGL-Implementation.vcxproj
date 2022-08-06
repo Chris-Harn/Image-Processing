@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Controls.h" />
+    <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\ImGui\GUI.h" />
     <ClInclude Include="Include\Application.h" />
     <ClInclude Include="Include\OpenGL\Framebuffer.h" />
@@ -190,6 +191,7 @@
   <ItemGroup>
     <None Include="Resource\Shaders\BasicBlit.glsl" />
     <None Include="Resource\Shaders\Error\CautionStrips.glsl" />
+    <None Include="Resource\Shaders\FlipImage.glsl" />
     <None Include="Resource\Shaders\GammaLUT.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
