@@ -3,13 +3,14 @@
 #include <fstream>
 #include <string>
 
-// Temp
-#include <iostream>
-
 VideoLoader::VideoLoader() {
-    m_pFFmpeg = nullptr;
+    // Video
+    m_pVFFmpeg = nullptr;
     m_width = 0;
     m_height = 0;
+
+    // Audio 
+    m_pAFFmpeg = nullptr;
 
     // PBO starts here. 
     m_index = 0;
@@ -50,18 +51,21 @@ void VideoLoader::LoadNewVideo( const char *filepath, const char *cmdFFmpeg ) {
     f.read( (char *)&m_height, 4 );
     f.close();
 
-    std::cout << "Video loaded has width of " << m_width << " and height of " << m_height << std::endl;
-
     // Updated dataSize to video's actual size
     m_dataSize = m_width * m_height * 3;
 
-    std::string input = "ffmpeg -i " + std::string( filepath ) + " " + std::string( cmdFFmpeg );
+    std::string inputVid = "ffmpeg -i " + std::string( filepath ) + " " + std::string( cmdFFmpeg );
 
-    m_pFFmpeg = _popen( input.c_str(), "rb" );
+    m_pVFFmpeg = _popen( inputVid.c_str(), "rb" );
 
     if(SPEED_BUFFER == true ) {
-        setvbuf( m_pFFmpeg, NULL, _IOFBF, m_dataSize );
+        setvbuf( m_pVFFmpeg, NULL, _IOFBF, m_dataSize );
     }
+
+    std::string inputAud = "ffmpeg -i " + std::string( filepath ) + " -f s16le -ac 1 - "; 
+    m_pAFFmpeg = _popen( inputAud.c_str(), "r" );
+
+    m_sample = new int();
 }
 
 void VideoLoader::GrabFrameFromVideo() {
@@ -91,13 +95,26 @@ void VideoLoader::GrabFrameFromVideo() {
     // map the buffer object into client's memory
     GLubyte *ptr = (GLubyte *)glMapBuffer( GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY );
     if( ptr ) {
-        int count = fread( ptr, 1, m_dataSize, m_pFFmpeg );
+        // Grab Video and put into PBO location space
+        int count = fread( ptr, 1, m_dataSize, m_pVFFmpeg );
+
+        // Grab Audio
+        int aCount = fread( m_sample, 2, 2, m_pAFFmpeg );
+
+        // Set flag deciding if we can turn off playback/recording
+        if( count != m_dataSize ) {
+            // Do nothing yet when get to the end of a file
+        }
 
         glUnmapBuffer( GL_PIXEL_UNPACK_BUFFER );  // release pointer to mapping buffer
     }
 
     glBindBuffer( GL_PIXEL_UNPACK_BUFFER, 0 );
     glBindTexture( GL_TEXTURE_2D, 0 );
+}
+
+int *VideoLoader::GrabAudioFromVideo() {
+    return m_sample;
 }
 
 void VideoLoader::BindTexture( unsigned int slot ) {
@@ -110,8 +127,13 @@ void VideoLoader::UnbindTexture( unsigned int slot ) {
 }
 
 void VideoLoader::CleanUp() {
-        fflush( m_pFFmpeg );
-        _pclose( m_pFFmpeg );
+        // Video
+        fflush( m_pVFFmpeg );
+        _pclose( m_pVFFmpeg );
+
+        // Audio
+        fflush( m_pAFFmpeg );
+        _pclose( m_pAFFmpeg );
 
         // Delete space reserved in heap
         if( m_pImageData != 0 ) {

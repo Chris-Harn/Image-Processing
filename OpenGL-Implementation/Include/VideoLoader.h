@@ -12,13 +12,19 @@ public:
     ~VideoLoader();
     void LoadNewVideo( const char *filepath, const char *cmdFFmpeg );
     void GrabFrameFromVideo();
+    int *GrabAudioFromVideo();
     void BindTexture( unsigned int slot = 0 );
     void UnbindTexture( unsigned int slot = 0 );
     void CleanUp();
 public:
-    FILE *m_pFFmpeg;
+    // Video
+    FILE *m_pVFFmpeg;
     int m_width;
     int m_height;
+
+    // Audio
+    FILE *m_pAFFmpeg;
+    int *m_sample;
 
     // PBO
     int m_index;

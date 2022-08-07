@@ -137,10 +137,6 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     g_pVideoPlayer->PlayCommand(); 
     bool test = g_pVideoPlayer->CurrentlyPlaying();
 
-    // Setp controls with default values
-    g_ShaderControls.m_inputGamma = 1.0f;
-    g_ShaderControls.m_outputGamma = 1.0f;
-
     print_message( "Program started without issue." );
 
     return true;

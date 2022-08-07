@@ -6,15 +6,15 @@
 
 struct ShaderControls {
     // One spot for all the ways to close to communicate using
-    bool m_bcloseProgram;
+    bool m_bcloseProgram = false;
 
     // Change Picture Orientation
-    bool m_bflipHorizontal;
+    bool m_bflipHorizontal = false;
     bool m_bflipVertical = true;
 
     // Input Gamma Correction
-    bool m_binputGamma;
-    float m_inputGamma;
+    bool m_binputGamma = false;
+    float m_inputGamma = 1.0f;
 
     // Convolution Filter 
 
@@ -25,8 +25,8 @@ struct ShaderControls {
     bool m_bsharpeningPass = true;
 
     // Output Gamma Correction
-    bool m_boutputGamma;
-    float m_outputGamma;
+    bool m_boutputGamma = false;
+    float m_outputGamma = 1.0f;
 };
 
 #endif
