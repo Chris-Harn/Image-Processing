@@ -25,7 +25,7 @@ Shader* ResourceManager::LoadShader( const char *vShaderFile, const char *fShade
 
     if(temp == nullptr) {
         printf("Failed to compile %s.\n", name.c_str() );
-        return m_Shaders[name] = new Shader( *m_Shaders["caution"] );
+        return m_Shaders[name] = new Shader( *m_Shaders["CautionImage"] );
     } 
 
     return m_Shaders[name] = temp;
@@ -45,7 +45,7 @@ Shader* ResourceManager::LoadShader( const char *ShaderFile, std::string name ) 
 
     if( temp == nullptr ) {
         printf( "Failed to compile %s.\n", name.c_str() );
-        return m_Shaders[name] = new Shader( *m_Shaders["caution"] );
+        return m_Shaders[name] = new Shader( *m_Shaders["CautionImage"] );
     }
 
     return m_Shaders[name] = temp;

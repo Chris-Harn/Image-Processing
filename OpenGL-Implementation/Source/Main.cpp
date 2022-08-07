@@ -6,7 +6,7 @@ int main()
     // the application that follows
 
     Application mainApp;
-    if( mainApp.Initialization( 720, 480, 24.0f, "Image Processing Digital, VHS Videos" ) ) {
+    if( mainApp.Initialization( 640, 480, 24.0f, "Image Processing Digital, VHS Videos" ) ) {
         while( mainApp.ContinueProgram() ) {
             mainApp.ProcessInput();
             mainApp.Update();

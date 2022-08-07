@@ -149,5 +149,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resource\Shaders\FlipImage.glsl" />
+    <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />
+    <None Include="Resource\Shaders\SimpleSharpen.glsl" />
   </ItemGroup>
 </Project>

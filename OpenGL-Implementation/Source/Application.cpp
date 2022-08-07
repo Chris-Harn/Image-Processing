@@ -60,6 +60,14 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::CreateFramebuffer( window_width, window_height, "GammaInput" );
     ResourceManager::CreateFramebuffer( window_width, window_height, "GammaOutput" );
 
+    ResourceManager::LoadShader( "Resource/Shaders/GaussianBlur5x5.glsl", "BlurImage" );
+    ResourceManager::GetShader( "BlurImage" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "BlurOutput" );
+
+    ResourceManager::LoadShader( "Resource/Shaders/SimpleSharpen.glsl", "SharpenImage" );
+    ResourceManager::GetShader( "SharpenImage" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "SharpenOutput" );
+
     try { g_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -179,7 +187,6 @@ void Application::Render() {
         // Display static image on any size window
         ResourceManager::GetShader( "CautionImage" )->Use();
     }
-
     g_pQuad->RenderQuad();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
@@ -191,6 +198,24 @@ void Application::Render() {
         g_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
+    }
+
+    // Filter - Guassian Blur 5x5
+    if( g_ShaderControls.m_bguassianBlur == true ) {
+        ResourceManager::GetFramebuffer( "BlurOutput" )->Bind();
+        ResourceManager::GetShader( "BlurImage" )->Use();
+        g_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "BlurOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "BlurOutput" )->BindTexture( 0 );
+    }
+
+    // Filter - Simple Sharpen
+    if( g_ShaderControls.m_bsharpeningPass == true ) {
+        ResourceManager::GetFramebuffer( "SharpenOutput" )->Bind();
+        ResourceManager::GetShader( "SharpenImage" )->Use();
+        g_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "SharpenOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
     }
 
     // Update output gamma

@@ -90,6 +90,12 @@ void GUI::PollGuiEvents( ShaderControls &g_ShaderControls ) {
         ImGui::SliderFloat( "Input Gamma", &g_ShaderControls.m_inputGamma, 0.01f, 4.0f );
         ImGui::Separator();
 
+        ImGui::LabelText( "Stage 2", "Simple Filters" );
+        ImGui::Checkbox( "On/Off GaussianBlur", &g_ShaderControls.m_bguassianBlur );
+        ImGui::SameLine();
+        ImGui::Checkbox( "On/Off Simple Sharpen", &g_ShaderControls.m_bsharpeningPass );
+        ImGui::Separator();
+
         ImGui::LabelText( "Stage XX", "Output Gamma" );
         ImGui::Checkbox( "On/Off Output Gamma", &g_ShaderControls.m_boutputGamma );
         ImGui::SameLine();
