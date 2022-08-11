@@ -4,7 +4,13 @@
 // NOTE: Hard coding what is on right now, but will eventually
 // move into xml files
 
-struct ShaderControls {
+#include <string>
+
+struct ProgramControls {
+    // Path to Video and wither it has been processed
+    bool m_bprocessNewVideo = false;
+    std::string m_spathToCurrentVideo = "../../VHS_1980.avi";
+
     // One spot for all the ways to close to communicate using
     bool m_bcloseProgram = false;
 

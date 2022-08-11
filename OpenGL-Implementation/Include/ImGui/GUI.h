@@ -11,7 +11,7 @@ public:
     GUI();
     ~GUI();
     void Initialization( GLFWwindow *mainWindow );
-    void PollGuiEvents( ShaderControls &g_ShaderControls );
+    void PollGuiEvents( ProgramControls &g_ProgramControls );
     void Draw();
 };
 

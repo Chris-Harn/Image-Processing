@@ -19,7 +19,7 @@ GUI *g_pGUI = nullptr;
 Timer *g_pAppTimer = nullptr;
 VideoLoader *g_pVideoLoader = nullptr;
 VideoPlayer *g_pVideoPlayer = nullptr;
-ShaderControls g_ShaderControls;
+ProgramControls g_ProgramControls;
 
 Application::Application() : AppRunning(true) {
 
@@ -123,7 +123,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     }
     
     // Placeholder till can get GUI to load - Add to update function
-    g_pVideoLoader->LoadNewVideo( "../../VHS_1980.avi", "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
+    g_pVideoLoader->LoadNewVideo( g_ProgramControls.m_spathToCurrentVideo.c_str(), "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
 
     try { g_pVideoPlayer = new VideoPlayer(); }
     catch( const std::bad_alloc &e ) {
@@ -150,13 +150,13 @@ void Application::ProcessInput() {
     g_pSecondaryWindow->PollEvents();
 
     g_pGUIWindow->MakeCurrentContext();
-    g_pGUI->PollGuiEvents( g_ShaderControls );
+    g_pGUI->PollGuiEvents( g_ProgramControls );
 
     // If any window should close... exit the program
     if( ( g_pMainWindow->GetShouldClose() ) ||
         ( g_pSecondaryWindow->GetShouldClose() ) ||
         ( g_pGUIWindow->GetShouldClose() ) ||
-        ( g_ShaderControls.m_bcloseProgram == true ) ) AppRunning = false;
+        ( g_ProgramControls.m_bcloseProgram == true ) ) AppRunning = false;
 }
 
 void Application::Update() {
@@ -177,8 +177,8 @@ void Application::Render() {
         g_pVideoLoader->GrabFrameFromVideo();
         g_pVideoLoader->BindTexture( 0 );
         ResourceManager::GetShader( "FlipImage" )->Use();
-        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ShaderControls.m_bflipVertical );
-        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipHorizontal", g_ShaderControls.m_bflipHorizontal );
+        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ProgramControls.m_bflipVertical );
+        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipHorizontal", g_ProgramControls.m_bflipHorizontal );
     } else {
         // Display static image on any size window
         ResourceManager::GetShader( "CautionImage" )->Use();
@@ -188,16 +188,16 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
     // Update input gamma
-    if( g_ShaderControls.m_binputGamma == true ) {
+    if( g_ProgramControls.m_binputGamma == true ) {
         ResourceManager::GetFramebuffer( "GammaInput" )->Bind();
-        ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_inputGamma, true );
+        ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ProgramControls.m_inputGamma, true );
         g_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
     }
 
     // Filter - Guassian Blur 5x5
-    if( g_ShaderControls.m_bguassianBlur == true ) {
+    if( g_ProgramControls.m_bguassianBlur == true ) {
         ResourceManager::GetFramebuffer( "BlurOutput" )->Bind();
         ResourceManager::GetShader( "BlurImage" )->Use();
         g_pQuad->RenderQuad();
@@ -206,7 +206,7 @@ void Application::Render() {
     }
 
     // Filter - Simple Sharpen
-    if( g_ShaderControls.m_bsharpeningPass == true ) {
+    if( g_ProgramControls.m_bsharpeningPass == true ) {
         ResourceManager::GetFramebuffer( "SharpenOutput" )->Bind();
         ResourceManager::GetShader( "SharpenImage" )->Use();
         g_pQuad->RenderQuad();
@@ -215,9 +215,9 @@ void Application::Render() {
     }
 
     // Update output gamma
-    if( g_ShaderControls.m_boutputGamma == true ) {
+    if( g_ProgramControls.m_boutputGamma == true ) {
         ResourceManager::GetFramebuffer( "GammaOutput" )->Bind();
-        ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ShaderControls.m_outputGamma, true );
+        ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ProgramControls.m_outputGamma, true );
         g_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaOutput" )->BindTexture( 0 );
