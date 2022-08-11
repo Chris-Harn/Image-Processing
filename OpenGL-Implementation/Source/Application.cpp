@@ -266,6 +266,7 @@ void Application::CleanUp() {
     if( g_pGUI != nullptr ) delete g_pGUI; g_pGUI = nullptr;
     if( g_pQuad2 != nullptr ) delete g_pQuad2; g_pQuad2 = nullptr;
     if( g_pQuad != nullptr ) delete g_pQuad; g_pQuad = nullptr;
+    if( g_pGUIWindow != nullptr ) delete g_pGUIWindow; g_pGUIWindow = nullptr;
     if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow; g_pSecondaryWindow = nullptr;
     if( g_pMainWindow != nullptr ) delete g_pMainWindow; g_pMainWindow = nullptr;
 
