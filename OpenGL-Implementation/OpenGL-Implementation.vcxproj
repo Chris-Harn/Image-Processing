@@ -193,6 +193,7 @@
   <ItemGroup>
     <None Include="Resource\Shaders\BasicBlit.glsl" />
     <None Include="Resource\Shaders\Error\CautionStrips.glsl" />
+    <None Include="Resource\Shaders\DeNoise.glsl" />
     <None Include="Resource\Shaders\FlipImage.glsl" />
     <None Include="Resource\Shaders\GammaLUT.glsl" />
     <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />

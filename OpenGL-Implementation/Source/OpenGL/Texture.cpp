@@ -6,15 +6,15 @@ Texture::Texture()
     : m_textureID(0), m_width(0), m_height(0), m_internalFormat(GL_RGB),
       m_imageFormat(GL_RGB), m_wrapS(GL_REPEAT), m_wrapT(GL_LINEAR), m_filterMin(GL_LINEAR),
       m_filterMax(GL_LINEAR) {
-    m_textureID = 0;
-    m_width = 0;
-    m_height = 0;
-    m_internalFormat = 0;
-    m_imageFormat = 0;
-    m_wrapS = 0;
-    m_wrapT = 0;
-    m_filterMin = 0;
-    m_filterMax = 0;
+    //m_textureID = 0;
+    //m_width = 0;
+    //m_height = 0;
+    //m_internalFormat = 0;
+    //m_imageFormat = 0;
+    //m_wrapS = 0;
+    //m_wrapT = 0;
+    //m_filterMin = 0;
+    //m_filterMax = 0;
 }
 
 Texture::~Texture() {

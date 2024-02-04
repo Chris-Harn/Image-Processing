@@ -151,5 +151,6 @@
     <None Include="Resource\Shaders\FlipImage.glsl" />
     <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />
     <None Include="Resource\Shaders\SimpleSharpen.glsl" />
+    <None Include="Resource\Shaders\DeNoise.glsl" />
   </ItemGroup>
 </Project>

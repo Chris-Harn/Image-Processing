@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 
 Quad::Quad() {
-    unsigned int Qindices[] = {
+    unsigned short Qindices[] = {
     0, 1, 2, // triangle 1
     0, 2, 3 // triangle 2
     };
@@ -73,7 +73,7 @@ Quad::~Quad() {
 void Quad::RenderQuad() {
     glBindVertexArray( m_VAO );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_IBO );
-    glDrawElements( GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0 );
+    glDrawElements( GL_TRIANGLES, m_indexCount, GL_UNSIGNED_SHORT, 0 );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
     glBindVertexArray( 0 );
 }

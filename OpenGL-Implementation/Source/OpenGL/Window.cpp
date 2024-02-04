@@ -22,24 +22,27 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     const char *title, unsigned int windowNumber, GLFWwindow *firstWindow ) {
     /**************************************************************************/
     /*** Setup Main and Secondary Window the Same - Does not share context  ***/
-    /*** items                                                              ***/
+    /*** items. Initalize glfw and glew once.                               ***/
     /**************************************************************************/
-    if( glfwInit() == false ) {
-        print_error_message( "ERROR: EXIT EARLY: GLFW Initialization failed." );
-        glfwTerminate();
-        return false;
+    if( windowNumber == 0 ) {
+        if( glfwInit() == false ) {
+            print_error_message( "ERROR: EXIT EARLY: GLFW Initialization failed." );
+            glfwTerminate();
+            return false;
+        }
+        /*
+        // Setup GLFW window properties with OpenGL version
+        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+        glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
+        // Core profile = No backwards compatibility and best performance
+        glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+        // Allow forward compatiblity
+        glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+        */
+
+        // Lock current aspect ratio - Must be before window creation
+        glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     }
-
-    // Setup GLFW window properties with OpenGL version
-    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-    glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-    // Core profile = No backwards compatibility and best performance
-    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-    // Allow forward compatiblity
-    glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-
-    // Lock current aspect ratio - Must be before window creation
-    glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
 
     m_pWindow = glfwCreateWindow( width, height, title, nullptr, firstWindow );
 
@@ -55,14 +58,16 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     // Get buffer size information
     glfwGetFramebufferSize( m_pWindow, &m_BufferWidth, &m_BufferHeight );
 
-    // Allow modern extension features
-    glewExperimental = GL_TRUE;
+    if( windowNumber == 0 ) {
+        // Allow modern extension features
+        glewExperimental = GL_TRUE;
 
-    if( glewInit() != GLEW_OK ) {
-        print_error_message( "ERROR: EXIT EARLY: GLEW main window initialization failed." );
-        glfwDestroyWindow( m_pWindow );
-        glfwTerminate();
-        return false;
+        if( glewInit() != GLEW_OK ) {
+            print_error_message( "ERROR: EXIT EARLY: GLEW main window initialization failed." );
+            glfwDestroyWindow( m_pWindow );
+            glfwTerminate();
+            return false;
+        }
     }
 
     // Setup Viewport Size

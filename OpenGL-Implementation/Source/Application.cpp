@@ -137,6 +137,8 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     g_pVideoPlayer->PlayCommand(); 
     bool test = g_pVideoPlayer->CurrentlyPlaying();
 
+
+
     print_message( "Program started without issue." );
 
     return true;
