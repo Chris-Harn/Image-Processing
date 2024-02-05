@@ -149,6 +149,9 @@
     <ClInclude Include="Include\OpenGL\TextRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\OpenGL\Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shaders\BasicBlit.glsl">
@@ -164,6 +167,7 @@
     <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />
     <None Include="Resource\Shaders\SimpleSharpen.glsl" />
     <None Include="Resource\Shaders\DeNoise.glsl" />
+    <None Include="Resource\Shaders\FastBlitTextToScreen.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resource\Font\arial.ttf" />

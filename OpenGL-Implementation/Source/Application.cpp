@@ -3,6 +3,8 @@
 #include "OpenGL\Window.h"
 #include "OpenGL\Quad.h"
 #include "OpenGL\ResourceManager.h"
+#include "OpenGL\TextRenderer.h"
+#include "OpenGL\Helper.h"
 #include "ImGUI\GUI.h" 
 #include "Timer.h"
 #include "Utility.h"
@@ -10,11 +12,14 @@
 #include "VideoLoader.h"
 #include "VideoPlayer.h"
 
+Application *Application::s_pInstance = 0;
+
 Window *g_pMainWindow = nullptr;
 Window *g_pSecondaryWindow = nullptr;
 Window *g_pGUIWindow = nullptr;
 Quad *g_pQuad = nullptr;
 Quad *g_pQuad2 = nullptr;
+TextRenderer *g_pTextRenderer = nullptr;
 GUI *g_pGUI = nullptr;
 Timer *g_pAppTimer = nullptr;
 VideoLoader *g_pVideoLoader = nullptr;
@@ -68,6 +73,9 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::GetShader( "SharpenImage" )->SetInteger( "u_Texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "SharpenOutput" );
 
+    ResourceManager::LoadShader( "Resource/Shaders/FastBlitTextToScreen.glsl", "FastBlitText" );
+    ResourceManager::GetShader( "FastBlitText" )->SetInteger( "text", 0, true );
+
     try { g_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -78,6 +86,14 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
+
+    try { g_pTextRenderer = new TextRenderer(); }
+    catch( const std::bad_alloc &e ) {
+        (void)e;
+        print_error_message( "ERROR: MEMORY ALLOCATION: Text Renderer failed to allocate on heap." );
+        return false;
+    }
+    g_pTextRenderer->Initialize( g_pSecondaryWindow );
     try { g_pQuad2 = new Quad(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -240,6 +256,8 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
     ResourceManager::GetShader( "BlitImage" )->Use();
     g_pQuad2->RenderQuad();
+
+    DisplayPerformanceInformation();
 
     g_pSecondaryWindow->SwapBuffers();
 

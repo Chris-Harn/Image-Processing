@@ -3,7 +3,12 @@
 
 class Application {
 public:
-    Application();
+    static Application *Instance() {
+        if( s_pInstance == 0 ) {
+            s_pInstance = new Application();
+        }
+        return s_pInstance;
+    }
 
     bool Initialization( unsigned int window_width,
         unsigned int window_height,
@@ -17,8 +22,15 @@ public:
     bool ContinueProgram();
 
 public:
+    Application();
+    ~Application() { }
+
+    static Application *s_pInstance;
+
     bool AppRunning;
 };
+
+typedef Application TheApplication;
 
 #endif
 
