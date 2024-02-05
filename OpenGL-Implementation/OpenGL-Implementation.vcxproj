@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\OpenGL\ImageFilter.cpp" />
     <ClCompile Include="Source\ImGui\GUI.cpp" />
     <ClCompile Include="Source\ImGui\imgui.cpp" />
     <ClCompile Include="Source\ImGui\imgui_demo.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="Source\VideoPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\OpenGL\ImageFilter.h" />
     <ClInclude Include="Include\Controls.h" />
     <ClInclude Include="Include\Defines.h" />
     <ClInclude Include="Include\ImGui\GUI.h" />
