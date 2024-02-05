@@ -78,13 +78,17 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\GLM\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\GLM\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(SolutionDir)\External_Dependances\FreeType\x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(SolutionDir)\External_Dependances\FreeType\x64\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\Intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\GLM\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\OpenGL-Implementation\Include;$(SolutionDir)\External_Dependances\GLFW\x64\include;$(SolutionDir)\External_Dependances\GLEW\x64\include;$(SolutionDir)\External_Dependances\GLM\x64\include;$(SolutionDir)\External_Dependances\DearIMGui\x64\include;$(SolutionDir)\External_Dependances\FreeType\x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\External_Dependances\GLFW\x64\lib;$(SolutionDir)\External_Dependances\GLEW\x64\lib;$(SolutionDir)\External_Dependances\FreeType\x64\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\Bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\Bin\Intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,7 +131,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +151,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -173,6 +177,7 @@
     <ClCompile Include="Source\Timer.cpp" />
     <ClCompile Include="Source\VideoLoader.cpp" />
     <ClCompile Include="Source\VideoPlayer.cpp" />
+    <ClCompile Include="Source\OpenGL\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\OpenGL\ImageFilter.h" />
@@ -191,6 +196,7 @@
     <ClInclude Include="Include\Utility.h" />
     <ClInclude Include="Include\VideoLoader.h" />
     <ClInclude Include="Include\VideoPlayer.h" />
+    <ClInclude Include="Include\OpenGL\TextRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shaders\BasicBlit.glsl" />
@@ -200,6 +206,9 @@
     <None Include="Resource\Shaders\GammaLUT.glsl" />
     <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />
     <None Include="Resource\Shaders\SimpleSharpen.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resource\Font\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
