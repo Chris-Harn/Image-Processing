@@ -1,6 +1,14 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+class Window;
+class Quad;
+class TextRenderer;
+class GUI;
+class Timer;
+class VideoLoader;
+class VideoPlayer;
+
 class Application {
 public:
     static Application *Instance() {
@@ -28,6 +36,18 @@ public:
     static Application *s_pInstance;
 
     bool AppRunning;
+
+    // OpenGL Structures
+    Window *g_pMainWindow;
+    Window *g_pSecondaryWindow;
+    Window *g_pGUIWindow;
+    Quad *g_pQuad;
+    Quad *g_pQuad2;
+    TextRenderer *g_pTextRenderer;
+    GUI *g_pGUI;
+    Timer *g_pAppTimer;
+    VideoLoader *g_pVideoLoader;
+    VideoPlayer *g_pVideoPlayer;
 };
 
 typedef Application TheApplication;

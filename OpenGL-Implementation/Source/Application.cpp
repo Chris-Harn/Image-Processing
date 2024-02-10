@@ -14,20 +14,19 @@
 
 Application *Application::s_pInstance = 0;
 
-Window *g_pMainWindow = nullptr;
-Window *g_pSecondaryWindow = nullptr;
-Window *g_pGUIWindow = nullptr;
-Quad *g_pQuad = nullptr;
-Quad *g_pQuad2 = nullptr;
-TextRenderer *g_pTextRenderer = nullptr;
-GUI *g_pGUI = nullptr;
-Timer *g_pAppTimer = nullptr;
-VideoLoader *g_pVideoLoader = nullptr;
-VideoPlayer *g_pVideoPlayer = nullptr;
 ProgramControls g_ProgramControls;
 
 Application::Application() : AppRunning(true) {
-
+    g_pMainWindow = nullptr;
+    g_pSecondaryWindow = nullptr;
+    g_pGUIWindow = nullptr;
+    g_pQuad = nullptr;
+    g_pQuad2 = nullptr;
+    g_pTextRenderer = nullptr;
+    g_pGUI = nullptr;
+    g_pAppTimer = nullptr;
+    g_pVideoLoader = nullptr;
+    g_pVideoPlayer = nullptr;
 }
 
 bool Application::Initialization( unsigned int window_width, unsigned int window_height, float video_fps, const char *title ) {    
