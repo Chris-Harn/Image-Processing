@@ -128,7 +128,8 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: App timer failed to allocate on heap." );
         return false;
     }
-    g_pAppTimer->Start( video_fps );
+    g_pAppTimer->Tick();
+    g_pAppTimer->RegulateFPS( true );
 
     try { g_pVideoLoader = new VideoLoader(); }
     catch( const std::bad_alloc &e ) {
@@ -152,14 +153,15 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     g_pVideoPlayer->PlayCommand(); 
     bool test = g_pVideoPlayer->CurrentlyPlaying();
 
-
-
     print_message( "Program started without issue." );
 
     return true;
 }
 
 void Application::ProcessInput() {
+    // Start of frame so restrict/start frame from here.
+    g_pAppTimer->Tick();
+
     g_pMainWindow->MakeCurrentContext();
     g_pMainWindow->PollEvents();
 
@@ -268,11 +270,6 @@ void Application::Render() {
     g_pGUI->Draw();
 
     g_pGUIWindow->SwapBuffers();
-
-    /*******************************************************/
-    // Final Actions for Loop
-    /*******************************************************/
-    g_pAppTimer->RestrictFrameRate();
 }
 
 void Application::CleanUp() {

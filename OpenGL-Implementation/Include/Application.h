@@ -5,7 +5,7 @@ class Window;
 class Quad;
 class TextRenderer;
 class GUI;
-class Timer;
+#include "Timer.h"
 class VideoLoader;
 class VideoPlayer;
 

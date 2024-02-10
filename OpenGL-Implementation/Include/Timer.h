@@ -1,29 +1,28 @@
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 #include <chrono>
+#include <thread>
 
 class Timer {
 public:
-    Timer();
+    Timer( int targetFPS = 24 );
     ~Timer();
-    
-    void Start( float targetFrames = 24.0f );
-    float GetDeltaTicks(); // returns in milliseconds
-    float GetiTime();
-    void ResetiTime();
-    void RestrictFrameRate();
+    void Tick();
+    double GetDeltaTime();
+    void RegulateFPS( bool turnOnRegulator );
+    int GetFPS();
+    bool GetRegulationValue();
 private:
-    // iTime Calculation
-    std::chrono::time_point<std::chrono::steady_clock>  m_StartTime;
-    std::chrono::time_point<std::chrono::steady_clock>  m_CurrentTime;
-
-    // Restrict the Frame Rate Variables
-    std::chrono::time_point<std::chrono::steady_clock>  m_LastFrameTime;
-    std::chrono::time_point<std::chrono::steady_clock>  m_CurrentFrameTime;
-    std::chrono::duration<float> m_DeltaFrameTime;
-
-    float m_HoldToThisFrameRate;
+    int m_targetFPS;
+    std::chrono::milliseconds m_frameDuration;
+    std::chrono::high_resolution_clock::time_point m_lastFrameTime;
+    std::chrono::high_resolution_clock::time_point m_lastSecondTime;
+    double m_deltaTime;
+    int m_frames;
+    int m_fps;
+    bool m_bRegulateFPS;
 };
 
 #endif
+

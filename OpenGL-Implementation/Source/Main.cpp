@@ -8,7 +8,6 @@ enum PROTO {
 
 int main()
 {
-    
     if( TheApplication::Instance()->Initialization( WINDOW_WIDTH, WINDOW_HEIGHT, TARGET_FPS, "Image Processing Digital, VHS Videos" ) ) {
         while( TheApplication::Instance()->ContinueProgram() ) {
             TheApplication::Instance()->ProcessInput();
