@@ -38,16 +38,16 @@ public:
     bool AppRunning;
 
     // OpenGL Structures
-    Window *g_pMainWindow;
-    Window *g_pSecondaryWindow;
-    Window *g_pGUIWindow;
-    Quad *g_pQuad;
-    Quad *g_pQuad2;
-    TextRenderer *g_pTextRenderer;
-    GUI *g_pGUI;
-    Timer *g_pAppTimer;
-    VideoLoader *g_pVideoLoader;
-    VideoPlayer *g_pVideoPlayer;
+    Window *m_pMainWindow;
+    Window *m_pSecondaryWindow;
+    Window *m_pGUIWindow;
+    Quad *m_pQuad;
+    Quad *m_pQuad2;
+    TextRenderer *m_pTextRenderer;
+    GUI *m_pGUI;
+    Timer *m_pAppTimer;
+    VideoLoader *m_pVideoLoader;
+    VideoPlayer *m_pVideoPlayer;
 };
 
 typedef Application TheApplication;

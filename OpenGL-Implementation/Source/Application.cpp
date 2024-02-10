@@ -17,30 +17,30 @@ Application *Application::s_pInstance = 0;
 ProgramControls g_ProgramControls;
 
 Application::Application() : AppRunning(true) {
-    g_pMainWindow = nullptr;
-    g_pSecondaryWindow = nullptr;
-    g_pGUIWindow = nullptr;
-    g_pQuad = nullptr;
-    g_pQuad2 = nullptr;
-    g_pTextRenderer = nullptr;
-    g_pGUI = nullptr;
-    g_pAppTimer = nullptr;
-    g_pVideoLoader = nullptr;
-    g_pVideoPlayer = nullptr;
+    m_pMainWindow = nullptr;
+    m_pSecondaryWindow = nullptr;
+    m_pGUIWindow = nullptr;
+    m_pQuad = nullptr;
+    m_pQuad2 = nullptr;
+    m_pTextRenderer = nullptr;
+    m_pGUI = nullptr;
+    m_pAppTimer = nullptr;
+    m_pVideoLoader = nullptr;
+    m_pVideoPlayer = nullptr;
 }
 
 bool Application::Initialization( unsigned int window_width, unsigned int window_height, float video_fps, const char *title ) {    
-    try { g_pMainWindow = new Window(); }
+    try { m_pMainWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Main Window failed to allocate on heap." );
         return false;
     }
-    if( g_pMainWindow->Initialization( window_width, window_height, title, 0, nullptr ) != true) {
+    if( m_pMainWindow->Initialization( window_width, window_height, title, 0, nullptr ) != true) {
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
-    try { g_pQuad = new Quad(); }
+    try { m_pQuad = new Quad(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Quad #1 failed to allocate on heap." );
@@ -75,63 +75,63 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::LoadShader( "Resource/Shaders/FastBlitTextToScreen.glsl", "FastBlitText" );
     ResourceManager::GetShader( "FastBlitText" )->SetInteger( "text", 0, true );
 
-    try { g_pSecondaryWindow = new Window(); }
+    try { m_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Secondary Window failed to allocate on heap." );
         return false;
     }
-    if( g_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", 1, g_pMainWindow->GetWindow() ) != true ) {
+    if( m_pSecondaryWindow->Initialization( window_width, window_height, "Original Video", 1, m_pMainWindow->GetWindow() ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: Secondary window failed to initalize." );
         return false;
     }
 
-    try { g_pTextRenderer = new TextRenderer(); }
+    try { m_pTextRenderer = new TextRenderer(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Text Renderer failed to allocate on heap." );
         return false;
     }
-    g_pTextRenderer->Initialize( g_pSecondaryWindow );
-    try { g_pQuad2 = new Quad(); }
+    m_pTextRenderer->Initialize( m_pSecondaryWindow );
+    try { m_pQuad2 = new Quad(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Quad #2 failed to allocate on heap." );
         return false;
     }
 
-    try { g_pGUIWindow = new Window(); }
+    try { m_pGUIWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: GUI Window failed to allocate on heap." );
         return false;
     }
-    if( g_pGUIWindow->Initialization( 500, 600, "Video Controls", 2, nullptr ) != true ) {
+    if( m_pGUIWindow->Initialization( 500, 600, "Video Controls", 2, nullptr ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: GUI window failed to initalize." );
         return false;
     }
 
     // Switch OpenGL Context back so can render correctly on both windows
-    g_pMainWindow->MakeCurrentContext();
+    m_pMainWindow->MakeCurrentContext();
 
-    try { g_pGUI = new GUI(); }
+    try { m_pGUI = new GUI(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: GUI failed to allocate on heap." );
         return false;
     }
-    g_pGUI->Initialization( g_pGUIWindow->GetWindow() );
+    m_pGUI->Initialization( m_pGUIWindow->GetWindow() );
 
-    try{ g_pAppTimer = new Timer(); }
+    try{ m_pAppTimer = new Timer(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: App timer failed to allocate on heap." );
         return false;
     }
-    g_pAppTimer->Tick();
-    g_pAppTimer->RegulateFPS( true );
+    m_pAppTimer->Tick();
+    m_pAppTimer->RegulateFPS( true );
 
-    try { g_pVideoLoader = new VideoLoader(); }
+    try { m_pVideoLoader = new VideoLoader(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Video Loader failed to allocate on heap." );
@@ -139,9 +139,9 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     }
     
     // Placeholder till can get GUI to load - Add to update function
-    g_pVideoLoader->LoadNewVideo( g_ProgramControls.m_spathToCurrentVideo.c_str(), "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
+    m_pVideoLoader->LoadNewVideo( g_ProgramControls.m_spathToCurrentVideo.c_str(), "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
 
-    try { g_pVideoPlayer = new VideoPlayer(); }
+    try { m_pVideoPlayer = new VideoPlayer(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
         print_error_message( "ERROR: MEMORY ALLOCATION: Video Player failed to allocate on heap." );
@@ -149,9 +149,9 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     }
 
     // Placeholder till can get GUI to control
-    g_pVideoPlayer->ReadyCommand(); // Tells player something is loaded
-    g_pVideoPlayer->PlayCommand(); 
-    bool test = g_pVideoPlayer->CurrentlyPlaying();
+    m_pVideoPlayer->ReadyCommand(); // Tells player something is loaded
+    m_pVideoPlayer->PlayCommand(); 
+    bool test = m_pVideoPlayer->CurrentlyPlaying();
 
     print_message( "Program started without issue." );
 
@@ -160,21 +160,21 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
 
 void Application::ProcessInput() {
     // Start of frame so restrict/start frame from here.
-    g_pAppTimer->Tick();
+    m_pAppTimer->Tick();
 
-    g_pMainWindow->MakeCurrentContext();
-    g_pMainWindow->PollEvents();
+    m_pMainWindow->MakeCurrentContext();
+    m_pMainWindow->PollEvents();
 
-    g_pSecondaryWindow->MakeCurrentContext();
-    g_pSecondaryWindow->PollEvents();
+    m_pSecondaryWindow->MakeCurrentContext();
+    m_pSecondaryWindow->PollEvents();
 
-    g_pGUIWindow->MakeCurrentContext();
-    g_pGUI->PollGuiEvents( g_ProgramControls );
+    m_pGUIWindow->MakeCurrentContext();
+    m_pGUI->PollGuiEvents( g_ProgramControls );
 
     // If any window should close... exit the program
-    if( ( g_pMainWindow->GetShouldClose() ) ||
-        ( g_pSecondaryWindow->GetShouldClose() ) ||
-        ( g_pGUIWindow->GetShouldClose() ) ||
+    if( ( m_pMainWindow->GetShouldClose() ) ||
+        ( m_pSecondaryWindow->GetShouldClose() ) ||
+        ( m_pGUIWindow->GetShouldClose() ) ||
         ( g_ProgramControls.m_bcloseProgram == true ) ) AppRunning = false;
 }
 
@@ -186,15 +186,15 @@ void Application::Render() {
     /*******************************************************/
     // Render Main Window
     /*******************************************************/
-    g_pMainWindow->MakeCurrentContext();
-    g_pMainWindow->ClearColorBuffer();
+    m_pMainWindow->MakeCurrentContext();
+    m_pMainWindow->ClearColorBuffer();
 
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
-    if(g_pVideoPlayer->CurrentlyPlaying() == true ) {
+    if(m_pVideoPlayer->CurrentlyPlaying() == true ) {
         // Grab frame from video and process it
-        g_pVideoLoader->GrabFrameFromVideo();
-        g_pVideoLoader->BindTexture( 0 );
+        m_pVideoLoader->GrabFrameFromVideo();
+        m_pVideoLoader->BindTexture( 0 );
         ResourceManager::GetShader( "FlipImage" )->Use();
         ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ProgramControls.m_bflipVertical );
         ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipHorizontal", g_ProgramControls.m_bflipHorizontal );
@@ -202,7 +202,7 @@ void Application::Render() {
         // Display static image on any size window
         ResourceManager::GetShader( "CautionImage" )->Use();
     }
-    g_pQuad->RenderQuad();
+    m_pQuad->RenderQuad();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
@@ -210,7 +210,7 @@ void Application::Render() {
     if( g_ProgramControls.m_binputGamma == true ) {
         ResourceManager::GetFramebuffer( "GammaInput" )->Bind();
         ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ProgramControls.m_inputGamma, true );
-        g_pQuad->RenderQuad();
+        m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
     }
@@ -219,7 +219,7 @@ void Application::Render() {
     if( g_ProgramControls.m_bguassianBlur == true ) {
         ResourceManager::GetFramebuffer( "BlurOutput" )->Bind();
         ResourceManager::GetShader( "BlurImage" )->Use();
-        g_pQuad->RenderQuad();
+        m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BlurOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BlurOutput" )->BindTexture( 0 );
     }
@@ -228,7 +228,7 @@ void Application::Render() {
     if( g_ProgramControls.m_bsharpeningPass == true ) {
         ResourceManager::GetFramebuffer( "SharpenOutput" )->Bind();
         ResourceManager::GetShader( "SharpenImage" )->Use();
-        g_pQuad->RenderQuad();
+        m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "SharpenOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
     }
@@ -237,54 +237,54 @@ void Application::Render() {
     if( g_ProgramControls.m_boutputGamma == true ) {
         ResourceManager::GetFramebuffer( "GammaOutput" )->Bind();
         ResourceManager::GetShader( "GammaLUT" )->SetFloat( "u_Gamma", g_ProgramControls.m_outputGamma, true );
-        g_pQuad->RenderQuad();
+        m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaOutput" )->BindTexture( 0 );
     }
 
     ResourceManager::GetShader( "BlitImage" )->Use();
-    g_pQuad->RenderQuad();
+    m_pQuad->RenderQuad();
 
-    g_pMainWindow->SwapBuffers();
+    m_pMainWindow->SwapBuffers();
 
     /*******************************************************/
     // Render Secondary Window
     /*******************************************************/
-    g_pSecondaryWindow->MakeCurrentContext();
-    g_pSecondaryWindow->ClearColorBuffer();
+    m_pSecondaryWindow->MakeCurrentContext();
+    m_pSecondaryWindow->ClearColorBuffer();
 
     // Blit Original Video onto second window for comparison playback
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
     ResourceManager::GetShader( "BlitImage" )->Use();
-    g_pQuad2->RenderQuad();
+    m_pQuad2->RenderQuad();
 
     DisplayPerformanceInformation();
 
-    g_pSecondaryWindow->SwapBuffers();
+    m_pSecondaryWindow->SwapBuffers();
 
     /*******************************************************/
     // Render GUI Window
     /*******************************************************/
-    g_pGUIWindow->MakeCurrentContext();
-    g_pGUIWindow->ClearColorBuffer();
-    g_pGUI->Draw();
+    m_pGUIWindow->MakeCurrentContext();
+    m_pGUIWindow->ClearColorBuffer();
+    m_pGUI->Draw();
 
-    g_pGUIWindow->SwapBuffers();
+    m_pGUIWindow->SwapBuffers();
 }
 
 void Application::CleanUp() {
     // Clean up in reverse order created
     ResourceManager::CleanUp();
 
-    if( g_pVideoPlayer != nullptr ) delete g_pVideoPlayer; g_pVideoPlayer = nullptr;
-    if( g_pVideoLoader != nullptr ) delete g_pVideoLoader; g_pVideoLoader = nullptr;
-    if( g_pAppTimer != nullptr ) delete g_pAppTimer; g_pAppTimer = nullptr;
-    if( g_pGUI != nullptr ) delete g_pGUI; g_pGUI = nullptr;
-    if( g_pQuad2 != nullptr ) delete g_pQuad2; g_pQuad2 = nullptr;
-    if( g_pQuad != nullptr ) delete g_pQuad; g_pQuad = nullptr;
-    if( g_pGUIWindow != nullptr ) delete g_pGUIWindow; g_pGUIWindow = nullptr;
-    if( g_pSecondaryWindow != nullptr ) delete g_pSecondaryWindow; g_pSecondaryWindow = nullptr;
-    if( g_pMainWindow != nullptr ) delete g_pMainWindow; g_pMainWindow = nullptr;
+    if( m_pVideoPlayer != nullptr ) delete m_pVideoPlayer; m_pVideoPlayer = nullptr;
+    if( m_pVideoLoader != nullptr ) delete m_pVideoLoader; m_pVideoLoader = nullptr;
+    if( m_pAppTimer != nullptr ) delete m_pAppTimer; m_pAppTimer = nullptr;
+    if( m_pGUI != nullptr ) delete m_pGUI; m_pGUI = nullptr;
+    if( m_pQuad2 != nullptr ) delete m_pQuad2; m_pQuad2 = nullptr;
+    if( m_pQuad != nullptr ) delete m_pQuad; m_pQuad = nullptr;
+    if( m_pGUIWindow != nullptr ) delete m_pGUIWindow; m_pGUIWindow = nullptr;
+    if( m_pSecondaryWindow != nullptr ) delete m_pSecondaryWindow; m_pSecondaryWindow = nullptr;
+    if( m_pMainWindow != nullptr ) delete m_pMainWindow; m_pMainWindow = nullptr;
 
     print_message( "Program finished without issue." );
 }
