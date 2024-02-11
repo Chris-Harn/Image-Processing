@@ -168,6 +168,7 @@
     <None Include="Resource\Shaders\SimpleSharpen.glsl" />
     <None Include="Resource\Shaders\DeNoise.glsl" />
     <None Include="Resource\Shaders\FastBlitTextToScreen.glsl" />
+    <None Include="Resource\Shaders\ColorMedian.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resource\Font\arial.ttf" />

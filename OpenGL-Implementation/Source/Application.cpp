@@ -75,6 +75,10 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::LoadShader( "Resource/Shaders/FastBlitTextToScreen.glsl", "FastBlitText" );
     ResourceManager::GetShader( "FastBlitText" )->SetInteger( "text", 0, true );
 
+    ResourceManager::LoadShader( "Resource/Shaders/ColorMedian.glsl", "ColorMedian" );
+    ResourceManager::GetShader( "ColorMedian" )->SetInteger( "u_texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "ColorMedianOutput" );
+
     try { m_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -213,6 +217,15 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
+    }
+
+    // Filter - Color Median
+    if( g_ProgramControls.m_bcolorMedian == true ) {
+        ResourceManager::GetFramebuffer( "ColorMedianOutput" )->Bind();
+        ResourceManager::GetShader( "ColorMedian" )->Use();
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "ColorMedianOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "ColorMedianOutput" )->BindTexture( 0 );
     }
 
     // Filter - Guassian Blur 5x5

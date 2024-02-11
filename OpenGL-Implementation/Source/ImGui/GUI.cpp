@@ -101,12 +101,14 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         ImGui::Separator();
 
         ImGui::LabelText( "Stage 2", "Simple Filters" );
+        ImGui::Checkbox( "On/Off Color Median", &g_ProgramControls.m_bcolorMedian );
+        ImGui::Separator();
         ImGui::Checkbox( "On/Off GaussianBlur", &g_ProgramControls.m_bguassianBlur );
         ImGui::SameLine();
         ImGui::Checkbox( "On/Off Simple Sharpen", &g_ProgramControls.m_bsharpeningPass );
         ImGui::Separator();
 
-        ImGui::LabelText( "Stage XX", "Output Gamma" );
+        ImGui::LabelText( "Stage 3", "Output Gamma" );
         ImGui::Checkbox( "On/Off Output Gamma", &g_ProgramControls.m_boutputGamma );
         ImGui::SameLine();
         if( ImGui::Button( "Reset Output Gamma" ) ) {

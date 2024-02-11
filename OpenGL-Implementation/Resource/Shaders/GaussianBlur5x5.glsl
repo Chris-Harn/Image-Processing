@@ -44,9 +44,6 @@ float kernel[25] = float[]
 );
 
 void main() {
-//	for( int i = 0; i < 25; i++ )
-//		kernel[i] = (1.0f / 256.0f) * kernel[i];
-
 	vec3 color = vec3( 0.0f );
 	for( int i = 0; i < 25; i++ )
 		color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel[i];

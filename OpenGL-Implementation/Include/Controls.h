@@ -19,10 +19,12 @@ struct ProgramControls {
     bool m_bflipVertical = true;
 
     // Input Gamma Correction
-    bool m_binputGamma = false;
-    float m_inputGamma = 1.0f;
+    bool m_binputGamma = true;
+    float m_inputGamma = 1.314f;
 
-    // Convolution Filter 
+    // ******* Convolution Filters *******
+    // Color Median Filter
+    bool m_bcolorMedian = true;
 
     // Low Pass Filter
     bool m_bguassianBlur = true;
@@ -31,8 +33,8 @@ struct ProgramControls {
     bool m_bsharpeningPass = true;
 
     // Output Gamma Correction
-    bool m_boutputGamma = false;
-    float m_outputGamma = 1.0f;
+    bool m_boutputGamma = true;
+    float m_outputGamma = 0.987f;
 };
 
 #endif
