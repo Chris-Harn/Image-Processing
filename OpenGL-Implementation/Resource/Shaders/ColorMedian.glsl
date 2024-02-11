@@ -35,60 +35,66 @@ vec3 CIEXYZToRGB( vec3 Yxy );
 float averageValues( float arr[9] );
 float insertionSort( float arr[9] );
 
-// Tells where to sample values around main pixel
-vec2 offsets[9] = vec2[]
+// Sample values around main pixel
+vec2 offsets[8] = vec2[]
 (
 	vec2( -offset_x,  offset_y ), vec2( 0.0f,  offset_y ), vec2( offset_x,  offset_y ),
-	vec2( -offset_x,  0.0f ),     vec2( 0.0f,  offset_y ), vec2( offset_x,  0.0f ),
-	vec2( -offset_x, -offset_y ), vec2( 0.0f, -offset_y ), vec2( offset_x, -offset_y )
+	vec2( -offset_x,  0.0f ),     vec2( offset_x,  0.0f ), vec2( -offset_x, -offset_y ), 
+	vec2( 0.0f, -offset_y ),      vec2( offset_x, -offset_y )
 );
 
 void main() {
-	float color[9];
+	float color[8];
+	float luminance[8];
+	vec3 center = RGBToCIEXYZ( texture( u_Texture, FragCoord.st ).rgb );
+
 	vec3 xyz = vec3( 0.0 );
-	vec3 center = vec3( 0.0 );
-	for( int i = 0; i < 9; i++ ) {
+	for( int i = 0; i < 8; i++ ) {
 		xyz = RGBToCIEXYZ( texture( u_Texture, FragCoord.st + offsets[i] ).rgb );
 		color[i] = xyz.r;
-
-		if(i == 4)
-			center = xyz;
+		luminance[i] = xyz.g;
 	}
 
-	// Update with median value, convert back to rgb
-	//center.r = insertionSort( color );
+	// Sort color
+	int i, j;
+	float key;
+	for( i = 1; i < 8; i++ ) {
+		key = color[i];
+		j = i - 1;
 
-	center.r = averageValues( color );
+		while( j >= 0 && color[j] > key ) {
+			color[j + 1] = color[j];
+			j = j - 1;
+		}
+		color[j + 1] = key;
+	}
+
+	// Sort luminance
+	for( i = 1; i < 8; i++ ) {
+		key = luminance[i];
+		j = i - 1;
+
+		while( j >= 0 && luminance[j] > key ) {
+			luminance[j + 1] = luminance[j];
+			j = j - 1;
+		}
+		luminance[j + 1] = key;
+	}
+
+	// Test to see if needs color and luminance needs replacment
+	if( center.r < color[0] ) {
+		center.r = color[0];
+	} else if ( center.r > color[7] ) {
+		center.r = color[7];
+	}
+	if( center.g < luminance[0] ) {
+		center.g = luminance[0];
+	} else if ( center.g > luminance[7] ) {
+		center.g = luminance[7];
+	}
 
 	xyz = CIEXYZToRGB( center );
 	FragColor = vec4( xyz, 1.0 );
-}
-
-float averageValues( float arr[9] ) {
-	float average = 0;
-	for( int i = 0; i < 9; i++ ) {
-		average += arr[i];
-	}
-
-	average = average / 9;
-	return average;
-}
-
-float insertionSort( float arr[9] ) {
-	int i, j;
-	float key;
-	for( i = 1; i < 9; i++ ) {
-		key = arr[i];
-		j = i - 1;
-
-		while( j >= 0 && arr[j] > key ) {
-			arr[j + 1] = arr[j];
-			j = j - 1;
-		}
-		arr[j + 1] = key;
-	}
-
-	return arr[4];
 }
 
 // Takes in a RGB color(0-1.0) and returns it in CIE-XYZ format(Yxy).
