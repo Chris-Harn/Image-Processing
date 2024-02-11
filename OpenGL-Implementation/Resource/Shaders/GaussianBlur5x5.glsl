@@ -33,18 +33,19 @@ vec2 offsets[25] = vec2[]
 );
 
 // Low pass filter
+float modifier = ( 1.0f / 256.0f ); 
 float kernel[25] = float[]
 (
-	 1,  4,  6,  4,  1,
-	 4, 16, 24, 16,  4,
-	 6, 24, 36, 24,  6,
-	 4, 16, 24, 16,  4,
-	 1,  4,  6,  4,  1
+	 1 * modifier,  4 * modifier,  6 * modifier,  4 * modifier,  1 * modifier,
+	 4 * modifier, 16 * modifier, 24 * modifier, 16 * modifier,  4 * modifier,
+	 6 * modifier, 24 * modifier, 36 * modifier, 24 * modifier,  6 * modifier,
+	 4 * modifier, 16 * modifier, 24 * modifier, 16 * modifier,  4 * modifier,
+	 1 * modifier,  4 * modifier,  6 * modifier,  4 * modifier,  1 * modifier
 );
 
 void main() {
-	for( int i = 0; i < 25; i++ )
-		kernel[i] = (1.0f / 256.0f) * kernel[i];
+//	for( int i = 0; i < 25; i++ )
+//		kernel[i] = (1.0f / 256.0f) * kernel[i];
 
 	vec3 color = vec3( 0.0f );
 	for( int i = 0; i < 25; i++ )
