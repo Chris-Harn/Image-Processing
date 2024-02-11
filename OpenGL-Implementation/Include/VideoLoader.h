@@ -11,7 +11,7 @@ public:
     VideoLoader();
     ~VideoLoader();
     void LoadNewVideo( const char *filepath, const char *cmdFFmpeg );
-    void GrabFrameFromVideo();
+    bool GrabFrameFromVideo();
     int *GrabAudioFromVideo();
     void BindTexture( unsigned int slot = 0 );
     void UnbindTexture( unsigned int slot = 0 );

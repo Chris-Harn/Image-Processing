@@ -68,7 +68,7 @@ void VideoLoader::LoadNewVideo( const char *filepath, const char *cmdFFmpeg ) {
     m_sample = new int();
 }
 
-void VideoLoader::GrabFrameFromVideo() {
+bool VideoLoader::GrabFrameFromVideo() {
     m_index = ( m_index + 1 ) % PBO_COUNT;
     m_nextIndex = ( m_index + 1 ) % PBO_COUNT;
 
@@ -103,7 +103,8 @@ void VideoLoader::GrabFrameFromVideo() {
 
         // Set flag deciding if we can turn off playback/recording
         if( count != m_dataSize ) {
-            // Do nothing yet when get to the end of a file
+            // Exit as video is finished
+            return false;
         }
 
         glUnmapBuffer( GL_PIXEL_UNPACK_BUFFER );  // release pointer to mapping buffer
@@ -111,6 +112,8 @@ void VideoLoader::GrabFrameFromVideo() {
 
     glBindBuffer( GL_PIXEL_UNPACK_BUFFER, 0 );
     glBindTexture( GL_TEXTURE_2D, 0 );
+
+    return true;
 }
 
 int *VideoLoader::GrabAudioFromVideo() {

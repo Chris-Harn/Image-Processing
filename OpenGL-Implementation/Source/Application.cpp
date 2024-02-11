@@ -195,9 +195,8 @@ void Application::Render() {
 
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
-    if(m_pVideoPlayer->CurrentlyPlaying() == true ) {
+    if( ( m_pVideoPlayer->CurrentlyPlaying() == true ) && ( m_pVideoLoader->GrabFrameFromVideo() == true ) ) {
         // Grab frame from video and process it
-        m_pVideoLoader->GrabFrameFromVideo();
         m_pVideoLoader->BindTexture( 0 );
         ResourceManager::GetShader( "FlipImage" )->Use();
         ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ProgramControls.m_bflipVertical );
