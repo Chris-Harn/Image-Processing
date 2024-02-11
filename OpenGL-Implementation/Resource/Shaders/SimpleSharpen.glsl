@@ -1,14 +1,14 @@
 #shader vertex
 #version 450 core
 
-layout ( location = 0 ) in vec2 Pos;
-layout ( location = 1 ) in vec2 TexCoords;
+layout ( location = 0 ) in vec2 aPos;
+layout ( location = 1 ) in vec2 aTexCoords;
 
 out vec2 FragCoord;
 
 void main() {
-   gl_Position = vec4( Pos, 0.0, 1.0 );
-   FragCoord = TexCoords;
+   gl_Position = vec4( aPos, 0.0, 1.0 );
+   FragCoord = aTexCoords;
 }
 
 #shader fragment
@@ -26,7 +26,7 @@ const float offset_y = 1.0f / 480.0f;
 vec2 offsets[9] = vec2[]
 (
 	vec2( -offset_x,  offset_y ), vec2( 0.0f,  offset_y ), vec2( offset_x,  offset_y ),
-	vec2( -offset_x,  0.0f ),     vec2( 0.0f,  offset_y ), vec2( offset_x,  0.0f ),
+	vec2( -offset_x,  0.0f ),     vec2( 0.0f,  0.0f ),     vec2( offset_x,  0.0f ),
 	vec2( -offset_x, -offset_y ), vec2( 0.0f, -offset_y ), vec2( offset_x, -offset_y )
 );
 
