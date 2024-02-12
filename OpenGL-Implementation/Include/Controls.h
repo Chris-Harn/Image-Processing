@@ -40,7 +40,7 @@ struct ProgramControls {
     float m_outputGamma = 0.987f;
 
     // ******* Image Upscalers *******
-    int m_upscalerSelection = 2;
+    int m_upscalerSelection = 3;
 };
 
 #endif

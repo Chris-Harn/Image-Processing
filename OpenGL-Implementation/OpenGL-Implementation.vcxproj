@@ -200,6 +200,7 @@
     <ClInclude Include="Include\OpenGL\TextRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resource\Shaders\BicubicLagrangeUpscale.glsl" />
     <None Include="Resource\Shaders\BasicBlit.glsl" />
     <None Include="Resource\Shaders\BilinearUpscaling.glsl" />
     <None Include="Resource\Shaders\ColorMedian.glsl" />

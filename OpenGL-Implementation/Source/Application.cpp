@@ -96,6 +96,10 @@ bool Application::Initialization( unsigned int window_width,
     ResourceManager::GetShader( "Bilinear" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( upscale_width, upscale_height, "BilinearOutput" );
 
+    ResourceManager::LoadShader( "Resource/Shaders/BicubicLagrangeUpscale.glsl", "BicubicLagrange" );
+    ResourceManager::GetShader( "BicubicLagrange" )->SetInteger( "u_texture", 0, true );
+    ResourceManager::CreateFramebuffer( upscale_width, upscale_height, "BicubicLagrangeOutput" );
+
     try { m_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -280,13 +284,20 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->BindTexture( 0 );
-    } else {
+    } else if ( g_ProgramControls.m_upscalerSelection == 2 ) {
         // Bilinear Interpolation
         ResourceManager::GetFramebuffer( "BilinearOutput" )->Bind();
         ResourceManager::GetShader( "Bilinear" )->Use();
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BilinearOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BilinearOutput" )->BindTexture( 0 );
+    } else {
+        // Bicubic Lagrange Interpolation
+        ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->Bind();
+        ResourceManager::GetShader( "BicubicLagrange" )->Use();
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->BindTexture( 0 );
     }
 
     // Update output gamma

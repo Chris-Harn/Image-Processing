@@ -112,7 +112,8 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         ImGui::LabelText( "Stage 3", "Image Upscalers" );
         ImGui::RadioButton( "Simple Upscaler", &g_ProgramControls.m_upscalerSelection, 0 ); ImGui::SameLine();
         ImGui::RadioButton( "Nearest Neighbor", &g_ProgramControls.m_upscalerSelection, 1 ); ImGui::SameLine();
-        ImGui::RadioButton( "Bicubic Inter.", &g_ProgramControls.m_upscalerSelection, 2 );
+        ImGui::RadioButton( "Bilinear Inter.", &g_ProgramControls.m_upscalerSelection, 2 );
+        ImGui::RadioButton( "Bicubic Lagrange Inter.", &g_ProgramControls.m_upscalerSelection, 3 );
 
         ImGui::LabelText( "Stage 4", "Output Gamma" );
         ImGui::Checkbox( "On/Off Output Gamma", &g_ProgramControls.m_boutputGamma );

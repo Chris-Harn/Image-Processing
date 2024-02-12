@@ -171,6 +171,7 @@
     <None Include="Resource\Shaders\SimpleUpscale.glsl" />
     <None Include="Resource\Shaders\NearestNeighborUpscale.glsl" />
     <None Include="Resource\Shaders\BilinearUpscaling.glsl" />
+    <None Include="Resource\Shaders\BicubicLagrangeUpscale.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resource\Font\arial.ttf" />
