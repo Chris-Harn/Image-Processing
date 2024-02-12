@@ -36,7 +36,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
         print_error_message( "ERROR: MEMORY ALLOCATION: Main Window failed to allocate on heap." );
         return false;
     }
-    if( m_pMainWindow->Initialization( window_width, window_height, title, 0, nullptr ) != true) {
+    if( m_pMainWindow->Initialization( window_width * 2, window_height * 2, title, 0, nullptr ) != true) {
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
@@ -62,7 +62,7 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::LoadShader( "Resource/Shaders/GammaLUT.glsl", "GammaLUT" );
     ResourceManager::GetShader( "GammaLUT" )->SetInteger( "u_Texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "GammaInput" );
-    ResourceManager::CreateFramebuffer( window_width, window_height, "GammaOutput" );
+    ResourceManager::CreateFramebuffer( window_width * 2, window_height * 2, "GammaOutput" );
 
     ResourceManager::LoadShader( "Resource/Shaders/GaussianBlur5x5.glsl", "BlurImage" );
     ResourceManager::GetShader( "BlurImage" )->SetInteger( "u_Texture", 0, true );
@@ -78,6 +78,10 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::LoadShader( "Resource/Shaders/ColorMedian.glsl", "ColorMedian" );
     ResourceManager::GetShader( "ColorMedian" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "ColorMedianOutput" );
+
+    ResourceManager::LoadShader( "Resource/Shaders/SimpleUpscale.glsl", "SimpleUpscale" );
+    ResourceManager::GetShader( "ColorMedian" )->SetInteger( "u_texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width * 2, window_height * 2, "SimpleUpscaleOutput" );
 
     try { m_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
@@ -209,6 +213,9 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
+    m_pMainWindow->MakeCurrentContext();
+    m_pMainWindow->ClearColorBuffer();
+
     // Update input gamma
     if( g_ProgramControls.m_binputGamma == true ) {
         ResourceManager::GetFramebuffer( "GammaInput" )->Bind();
@@ -243,6 +250,15 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "SharpenOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
+    }
+
+    // Filter - Simple Sharpen
+    if( true ) {
+        ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Bind();
+        ResourceManager::GetShader( "SimpleUpscale" )->Use();
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->BindTexture( 0 );
     }
 
     // Update output gamma

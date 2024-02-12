@@ -208,6 +208,7 @@
     <None Include="Resource\Shaders\FlipImage.glsl" />
     <None Include="Resource\Shaders\GammaLUT.glsl" />
     <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />
+    <None Include="Resource\Shaders\SimpleUpscale.glsl" />
     <None Include="Resource\Shaders\SimpleSharpen.glsl" />
   </ItemGroup>
   <ItemGroup>

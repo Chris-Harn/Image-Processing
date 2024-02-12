@@ -3,7 +3,7 @@
 enum PROTO {
     WINDOW_WIDTH = 640,
     WINDOW_HEIGHT = 480,
-    TARGET_FPS = 24,
+    TARGET_FPS = 30,
 };
 
 int main()
