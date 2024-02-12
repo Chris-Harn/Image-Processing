@@ -19,9 +19,11 @@ public:
     }
 
     bool Initialization( unsigned int window_width,
-        unsigned int window_height,
-        float video_fps,
-        const char *title );
+                         unsigned int window_height,
+                         unsigned int upscale_width,
+                         unsigned int upscale_height,
+                         float video_fps,
+                         const char *title );
     void ProcessInput();
     void Update();
     void Render();

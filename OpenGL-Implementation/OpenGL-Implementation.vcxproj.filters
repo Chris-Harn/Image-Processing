@@ -170,6 +170,7 @@
     <None Include="Resource\Shaders\ColorMedian.glsl" />
     <None Include="Resource\Shaders\SimpleUpscale.glsl" />
     <None Include="Resource\Shaders\NearestNeighborUpscale.glsl" />
+    <None Include="Resource\Shaders\BilinearUpscaling.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resource\Font\arial.ttf" />

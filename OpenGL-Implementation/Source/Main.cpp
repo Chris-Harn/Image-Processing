@@ -3,12 +3,14 @@
 enum PROTO {
     WINDOW_WIDTH = 640,
     WINDOW_HEIGHT = 480,
+    UPSCALE_WIDTH = 1920,
+    UPSCALE_HEIGHT = 1080,
     TARGET_FPS = 30,
 };
 
 int main()
 {
-    if( TheApplication::Instance()->Initialization( WINDOW_WIDTH, WINDOW_HEIGHT, TARGET_FPS, "Image Processing Digital, VHS Videos" ) ) {
+    if( TheApplication::Instance()->Initialization( WINDOW_WIDTH, WINDOW_HEIGHT, UPSCALE_WIDTH, UPSCALE_HEIGHT, TARGET_FPS, "Image Processing Digital, VHS Videos" ) ) {
         while( TheApplication::Instance()->ContinueProgram() ) {
             TheApplication::Instance()->ProcessInput();
             TheApplication::Instance()->Update();
