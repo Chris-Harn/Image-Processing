@@ -80,8 +80,12 @@ bool Application::Initialization( unsigned int window_width, unsigned int window
     ResourceManager::CreateFramebuffer( window_width, window_height, "ColorMedianOutput" );
 
     ResourceManager::LoadShader( "Resource/Shaders/SimpleUpscale.glsl", "SimpleUpscale" );
-    ResourceManager::GetShader( "ColorMedian" )->SetInteger( "u_texture", 0, true );
+    ResourceManager::GetShader( "SimpleUpscale" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width * 2, window_height * 2, "SimpleUpscaleOutput" );
+
+    ResourceManager::LoadShader( "Resource/Shaders/NearestNeighborUpscale.glsl", "NNUpscale" );
+    ResourceManager::GetShader( "NNUpscale" )->SetInteger( "u_texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width * 2, window_height * 2, "NNUpscaleOutput" );
 
     try { m_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
@@ -261,12 +265,12 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->BindTexture( 0 );
     } else if ( g_ProgramControls.m_upscalerSelection == 1 ) {
-        //// Simple Upscale
-        //ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Bind();
-        //ResourceManager::GetShader( "SimpleUpscale" )->Use();
-        //m_pQuad->RenderQuad();
-        //ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Unbind();
-        //ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->BindTexture( 0 );
+        // Simple Upscale
+        ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->Bind();
+        ResourceManager::GetShader( "NNUpscale" )->Use();
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->BindTexture( 0 );
     }
 
     // Update output gamma
@@ -294,7 +298,9 @@ void Application::Render() {
     ResourceManager::GetShader( "BlitImage" )->Use();
     m_pQuad2->RenderQuad();
 
-    DisplayPerformanceInformation();
+    if( g_ProgramControls.m_bDisplayFPS == true ) {
+        DisplayPerformanceInformation();
+    }
 
     m_pSecondaryWindow->SwapBuffers();
 

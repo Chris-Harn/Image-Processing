@@ -86,6 +86,7 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         ImGui::EndMenuBar();
     }
     if( ImGui::CollapsingHeader( "Image Orientation" ) ) {
+        ImGui::Checkbox( "Display FPS", &g_ProgramControls.m_bDisplayFPS );
         ImGui::Checkbox( "Flip Horizontal Image", &g_ProgramControls.m_bflipHorizontal );
         ImGui::Checkbox( "Flip Veritical Image", &g_ProgramControls.m_bflipVertical );
     }

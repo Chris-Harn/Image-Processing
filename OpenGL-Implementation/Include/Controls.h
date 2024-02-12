@@ -22,6 +22,9 @@ struct ProgramControls {
     bool m_binputGamma = true;
     float m_inputGamma = 1.314f;
 
+    // Display FPS
+    bool m_bDisplayFPS = true;
+
     // ******* Convolution Filters *******
     // Color Median Filter
     bool m_bcolorMedian = true;
