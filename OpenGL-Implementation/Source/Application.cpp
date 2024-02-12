@@ -252,13 +252,21 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
     }
 
-    // Filter - Simple Sharpen
-    if( true ) {
+    // Image Upscalers
+    if( g_ProgramControls.m_upscalerSelection == 0 ) {
+        // Simple Upscale
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Bind();
         ResourceManager::GetShader( "SimpleUpscale" )->Use();
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->BindTexture( 0 );
+    } else if ( g_ProgramControls.m_upscalerSelection == 1 ) {
+        //// Simple Upscale
+        //ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Bind();
+        //ResourceManager::GetShader( "SimpleUpscale" )->Use();
+        //m_pQuad->RenderQuad();
+        //ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Unbind();
+        //ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->BindTexture( 0 );
     }
 
     // Update output gamma

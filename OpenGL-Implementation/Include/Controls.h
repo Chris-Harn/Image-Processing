@@ -35,6 +35,9 @@ struct ProgramControls {
     // Output Gamma Correction
     bool m_boutputGamma = true;
     float m_outputGamma = 0.987f;
+
+    // ******* Image Upscalers *******
+    int m_upscalerSelection = 0;
 };
 
 #endif
