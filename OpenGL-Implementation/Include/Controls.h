@@ -35,6 +35,9 @@ struct ProgramControls {
     // Simple Sharpen Filter
     bool m_bsharpeningPass = true;
 
+    // Anti-Aliasing Filter
+    bool m_bAntiAliasing = true;
+
     // Output Gamma Correction
     bool m_boutputGamma = true;
     float m_outputGamma = 0.987f;

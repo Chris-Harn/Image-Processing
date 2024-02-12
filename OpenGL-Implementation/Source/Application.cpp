@@ -100,6 +100,11 @@ bool Application::Initialization( unsigned int window_width,
     ResourceManager::GetShader( "BicubicLagrange" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( upscale_width, upscale_height, "BicubicLagrangeOutput" );
 
+    ResourceManager::LoadShader( "Resource/Shaders/AntiAliasing.glsl", "AntiAliasing" );
+    ResourceManager::GetShader( "AntiAliasing" )->SetInteger( "u_texture", 0, true );
+    ResourceManager::CreateFramebuffer( upscale_width, upscale_height, "AntiAliasingOutput" );
+
+
     try { m_pSecondaryWindow = new Window(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -298,6 +303,15 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->BindTexture( 0 );
+    }
+
+    // Anti-Aliasing Filter
+    if( g_ProgramControls.m_bAntiAliasing == true ) {
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
+        ResourceManager::GetShader( "AntiAliasing" )->Use();
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
     }
 
     // Update output gamma

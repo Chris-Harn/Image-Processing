@@ -114,8 +114,13 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         ImGui::RadioButton( "Nearest Neighbor", &g_ProgramControls.m_upscalerSelection, 1 ); ImGui::SameLine();
         ImGui::RadioButton( "Bilinear Inter.", &g_ProgramControls.m_upscalerSelection, 2 );
         ImGui::RadioButton( "Bicubic Lagrange Inter.", &g_ProgramControls.m_upscalerSelection, 3 );
+        ImGui::Separator();
 
-        ImGui::LabelText( "Stage 4", "Output Gamma" );
+        ImGui::LabelText( "Stage 4", "Final Filters" );
+        ImGui::Checkbox( "On/Off Anti-Aliasing", &g_ProgramControls.m_bAntiAliasing );
+        ImGui::Separator();
+
+        ImGui::LabelText( "Stage 5", "Output Gamma" );
         ImGui::Checkbox( "On/Off Output Gamma", &g_ProgramControls.m_boutputGamma );
         ImGui::SameLine();
         if( ImGui::Button( "Reset Output Gamma" ) ) {

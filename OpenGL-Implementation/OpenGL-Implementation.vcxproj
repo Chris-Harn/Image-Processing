@@ -198,8 +198,10 @@
     <ClInclude Include="Include\VideoLoader.h" />
     <ClInclude Include="Include\VideoPlayer.h" />
     <ClInclude Include="Include\OpenGL\TextRenderer.h" />
+    <ClInclude Include="Resource\Shaders\EnhancedSaturation.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resource\Shaders\AntiAliasing.glsl" />
     <None Include="Resource\Shaders\BicubicLagrangeUpscale.glsl" />
     <None Include="Resource\Shaders\BasicBlit.glsl" />
     <None Include="Resource\Shaders\BilinearUpscaling.glsl" />
@@ -207,6 +209,7 @@
     <None Include="Resource\Shaders\Error\CautionStrips.glsl" />
     <None Include="Resource\Shaders\FastBlitTextToScreen.glsl" />
     <None Include="Resource\Shaders\FlipImage.glsl" />
+    <None Include="Resource\Shaders\GammaCorrection.glsl" />
     <None Include="Resource\Shaders\GammaLUT.glsl" />
     <None Include="Resource\Shaders\GaussianBlur5x5.glsl" />
     <None Include="Resource\Shaders\NearestNeighborUpscale.glsl" />
