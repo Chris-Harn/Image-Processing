@@ -274,6 +274,15 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
     }
 
+    // Filter - Histogram Spread
+    if( g_ProgramControls.m_bHistoramSpread == true ) {
+        //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->Bind();
+        //ResourceManager::GetShader( "HistogramSpread" )->Use();
+        //m_pQuad->RenderQuad();
+        //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->Unbind();
+        //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->BindTexture( 0 );
+    }
+
     // Image Upscalers
     if( g_ProgramControls.m_upscalerSelection == 0 ) {
         // Simple Interpolation

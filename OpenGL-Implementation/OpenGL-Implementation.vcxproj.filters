@@ -177,6 +177,7 @@
     <None Include="Resource\Shaders\BicubicLagrangeUpscale.glsl" />
     <None Include="Resource\Shaders\AntiAliasing.glsl" />
     <None Include="Resource\Shaders\GammaCorrection.glsl" />
+    <None Include="Resource\Shaders\CollectHistogram.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resource\Font\arial.ttf" />

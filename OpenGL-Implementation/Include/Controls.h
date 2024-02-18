@@ -42,6 +42,9 @@ struct ProgramControls {
     bool m_boutputGamma = true;
     float m_outputGamma = 0.987f;
 
+    // ******* Convolution Manipulation *******
+    bool m_bHistoramSpread = true;
+
     // ******* Image Upscalers *******
     int m_upscalerSelection = 3;
 };

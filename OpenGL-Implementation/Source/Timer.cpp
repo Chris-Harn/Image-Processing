@@ -31,8 +31,8 @@ void Timer::Tick() {
     if( m_bRegulateFPS == true ) {
         // Adjust sleep time to maintain desired frame rate
         auto sleepTime = m_frameDuration - ( now - m_lastFrameTime );
-        if( sleepTime > std::chrono::milliseconds( 0 ) ) {
-            std::this_thread::sleep_for( sleepTime );
+        if( sleepTime > std::chrono::milliseconds( 8 ) ) {
+            std::this_thread::sleep_for( sleepTime / 8 ); // divide by 8 to account for the fact that sleep_for is not accurate
         }
     }
 }

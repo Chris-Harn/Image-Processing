@@ -95,6 +95,9 @@ bool Window::Initialization( unsigned int width, unsigned int height,
         // GUI
         glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.4f ) );
     }
+
+    // Turn off vsync
+    glfwSwapInterval( 0 );
  
     return true;
 }
