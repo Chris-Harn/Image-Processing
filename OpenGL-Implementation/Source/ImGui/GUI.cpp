@@ -113,7 +113,7 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         if( ImGui::Button( "Reset Saturation" ) ) {
             g_ProgramControls.m_enhanceSaturation = 1.0f;
         }
-        ImGui::SliderFloat( "Saturation", &g_ProgramControls.m_enhanceSaturation, 0.01f, 2.0f );
+        ImGui::SliderFloat( "Saturation", &g_ProgramControls.m_enhanceSaturation, 0.01f, 1.0f );
         ImGui::Separator();
 
         ImGui::LabelText( "Stage 3", "Histogram Manipulation" );

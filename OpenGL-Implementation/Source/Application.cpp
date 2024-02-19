@@ -282,6 +282,7 @@ void Application::Render() {
     if( g_ProgramControls.m_bEnhanceSaturation == true ) {
         ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->Bind();
         ResourceManager::GetShader( "EnhancedSaturation" )->Use();
+        ResourceManager::GetShader( "EnhancedSaturation" )->SetFloat( "u_fract", g_ProgramControls.m_enhanceSaturation, true );
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );

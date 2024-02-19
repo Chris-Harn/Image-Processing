@@ -14,19 +14,34 @@ void main() {
 #shader fragment
 #version 450 core
 
+// Implemented from https://www.pocketmagic.net/enhance-saturation-in-images-programatically/
+
 in vec2 TexCoords;
 out vec4 FragColor;
 
 uniform sampler2D u_Texture;
+uniform float u_fract;
 
 vec3 RGBToHSL( vec3 rgb );
 vec3 HSLToRGB( vec3 hsl );
+vec3 SetPixel( vec3 hsl, float fract );
 
 void main() {
 	vec3 hsl = RGBToHSL( texture( u_Texture, TexCoords.st ).rgb );
 
+	hsl = SetPixel( hsl, u_fract );
+
+
 	vec3 rgb = HSLToRGB( hsl );
 	FragColor = vec4( rgb, 1.0 );
+}
+
+vec3 SetPixel( vec3 hsl, float fract ) {
+	float grayFactor = hsl.y / 255.0;
+	float varInterval = 255 - hsl.y;
+	hsl.y = hsl.y + fract * varInterval * grayFactor;
+
+	return hsl;
 }
 
 // Takes in a RGB color(0-1.0) and returns it in HSL format
@@ -80,17 +95,17 @@ vec3 RGBToHSL( vec3 rgb ) {
 		}
 	}
 
-	//return hsl *= vec3( 360.0, 255.0, 255.0 );
-	return hsl;
+	return hsl *= vec3( 360.0, 255.0, 255.0 );
+	//return hsl;
 }
 
 // Takes in a HSL format and returns RGB color(0-1.0)
 vec3 HSLToRGB( vec3 hsl ) {
 	vec3 rgb = vec3( 0.0 );
 
-	//hsl.x = mod( hsl.x, 260 ) / 360.0;
-	//hsl.y = hsl.y / 256.0;
-	//hsl.z = hsl.z / 256.0;
+	hsl.x = mod( hsl.x, 260 ) / 360.0;
+	hsl.y = hsl.y / 256.0;
+	hsl.z = hsl.z / 256.0;
 
 	float temp1 = 0.0, temp2 = 0.0, tempr = 0.0, tempg = 0.0, tempb = 0.0;
 
