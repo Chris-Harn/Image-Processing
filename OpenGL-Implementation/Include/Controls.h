@@ -18,10 +18,6 @@ struct ProgramControls {
     bool m_bflipHorizontal = false;
     bool m_bflipVertical = true;
 
-    // Input Gamma Correction
-    bool m_binputGamma = true;
-    float m_inputGamma = 1.314f;
-
     // Display FPS
     bool m_bDisplayFPS = true;
 
@@ -38,11 +34,20 @@ struct ProgramControls {
     // Anti-Aliasing Filter
     bool m_bAntiAliasing = true;
 
+    // ****** Filters
+    // Input Gamma Correction
+    bool m_binputGamma = true;
+    float m_inputGamma = 1.314f;
+
     // Output Gamma Correction
     bool m_boutputGamma = true;
     float m_outputGamma = 0.987f;
 
-    // ******* Convolution Manipulation *******
+    // Saturation Enhance
+    bool m_bEnhanceSaturation = true;
+    float m_enhanceSaturation = 1.0f;
+
+    // ******* Histogram Manipulation *******
     bool m_bHistoramSpread = true;
 
     // ******* Image Upscalers *******

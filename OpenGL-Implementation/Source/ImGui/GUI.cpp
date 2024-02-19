@@ -108,6 +108,13 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         ImGui::SameLine();
         ImGui::Checkbox( "On/Off Simple Sharpen", &g_ProgramControls.m_bsharpeningPass );
         ImGui::Separator();
+        ImGui::Checkbox( "On/Off Enhanced Saturation", &g_ProgramControls.m_bEnhanceSaturation );
+        ImGui::SameLine();
+        if( ImGui::Button( "Reset Saturation" ) ) {
+            g_ProgramControls.m_enhanceSaturation = 1.0f;
+        }
+        ImGui::SliderFloat( "Saturation", &g_ProgramControls.m_enhanceSaturation, 0.01f, 2.0f );
+        ImGui::Separator();
 
         ImGui::LabelText( "Stage 3", "Histogram Manipulation" );
         ImGui::Checkbox( "On/Off Color Histogram Spread", &g_ProgramControls.m_bHistoramSpread );

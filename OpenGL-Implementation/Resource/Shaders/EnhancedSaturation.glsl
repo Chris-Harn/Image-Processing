@@ -1,74 +1,152 @@
 #shader vertex
 #version 450 core
 
-layout( location = 0 ) in vec2 aPos;
-layout( location = 1 ) in vec2 aTexCoords;
+layout ( location = 0 ) in vec2 aPos;
+layout ( location = 1 ) in vec2 aTexCoords;
 
-out vec2 FragCoord;
+out vec2 TexCoords;
 
 void main() {
-	gl_Position = vec4( aPos, 0.0, 1.0 );
-	FragCoord = aTexCoords;
+   gl_Position = vec4( aPos, 0.0, 1.0 );
+   TexCoords = aTexCoords;
 }
 
 #shader fragment
 #version 450 core
 
-in vec2 FragCoord;
+in vec2 TexCoords;
 out vec4 FragColor;
 
 uniform sampler2D u_Texture;
 
-float pi = 3.141592;
-
-vec3 RGBToHSL(vec3 rgb);
-vec3 HSLToRGB(vec3 hsl);
+vec3 RGBToHSL( vec3 rgb );
+vec3 HSLToRGB( vec3 hsl );
 
 void main() {
-	vec3 color = vec3( texture( u_Texture, FragCoord.st ) );
+	vec3 hsl = RGBToHSL( texture( u_Texture, TexCoords.st ).rgb );
 
-	FragColor = vec4( color, 1.0 );
+	vec3 rgb = HSLToRGB( hsl );
+	FragColor = vec4( rgb, 1.0 );
 }
 
-vec3 RGBToHSL(vec3 rgb) {
-	float maxValue = max( rgb.r, rgb.g );
-	maxValue = max( maxValue, rgb.b );
+// Takes in a RGB color(0-1.0) and returns it in HSL format
+// X is Hue, Y is Saturation, & Z is Luminance
+vec3 RGBToHSL( vec3 rgb ) {	
+	vec3 hsl = vec3( 0.0 );
 
-	float minValue = min( rgb.r, rgb.g );
-	minValue = min( minValue, rgb.b );
- 
-	float chroma = maxValue - minValue;
-	float luminosity = ( maxValue + minValue ) / 2.0;
-	float hue, saturation;
+	float maxColor = rgb.r;
+	int max = 0;
+	if( rgb.g > maxColor ) {
+		maxColor = rgb.g;
+		max = 1;
+	}
+	if( rgb.b > maxColor ) {
+		maxColor = rgb.b;
+		max = 2;
+	}
 
-	if( maxValue == minValue ) {
-		// Will likely never hit here.
-		hue = 0.0;
-		saturation = 0.0;
+	float minColor = rgb.r;
+	if( rgb.g < minColor ) {
+		minColor = rgb.g;
+	}
+	if( rgb.b < minColor ) {
+		minColor = rgb.b;
+	}
+
+	// Check if color is a shade of grade
+	if( ( rgb.r == rgb.g ) && ( rgb.g == rgb.b ) ) {
+		hsl.z = rgb.r; // set luminance to any color
 	} else {
-		saturation = maxValue - minValue;
-		luminosity = maxValue;
-
-		switch ( maxValue )  {
-		case rgb.r:
-			hue = ( rgb.g - rgb.b ) * ( pi / 3 ) / chroma;
-			break;
-		case rgb.g:
-			hue = ( 2 + ( ( rgb.b - rgb.r )  / chroma ) ) * ( pi / 3 )
-			break;
-		case rgb.b:
-			hue = ( 4 + ( ( rgb.r - rgb.g )  / chroma ) ) * ( pi / 3 )
-			break;
-		default:
-			break;
+		float d = maxColor - minColor;
+		hsl.z = ( minColor + maxColor ) / 2.0;
+		if( hsl.z < 0.5 ) {
+			hsl.y = d / ( maxColor + minColor );
+		} else {
+			hsl.y = d / (2.0 - maxColor - minColor );
 		}
-	{
 
-	return vec3( hue, saturation, luminosity );
+		if( max == 0 ) {
+			hsl.x = ( rgb.g - rgb.b ) / ( maxColor - minColor );
+		} else if( max == 1 ) {
+			hsl.x = 2.0 + ( rgb.b - rgb.r ) / ( maxColor - minColor );	
+		} else {
+			hsl.x = 4.0 + ( rgb.r - rgb.g ) / ( maxColor - minColor );
+		}
+
+		hsl.x /= 6.0; // bring it to a number between 0 and 1
+
+		if( hsl.x < 0) {
+			hsl.x += 1.0;
+		}
+	}
+
+	//return hsl *= vec3( 360.0, 255.0, 255.0 );
+	return hsl;
 }
 
-vec3 HSLToRGB(vec3 hsl) {
+// Takes in a HSL format and returns RGB color(0-1.0)
+vec3 HSLToRGB( vec3 hsl ) {
+	vec3 rgb = vec3( 0.0 );
 
+	//hsl.x = mod( hsl.x, 260 ) / 360.0;
+	//hsl.y = hsl.y / 256.0;
+	//hsl.z = hsl.z / 256.0;
+
+	float temp1 = 0.0, temp2 = 0.0, tempr = 0.0, tempg = 0.0, tempb = 0.0;
+
+	if( hsl.y == 0.0 ) {
+		rgb = vec3( hsl.z );
+	} else {
+		if( hsl.z < 0.5 ) {
+			temp2 = hsl.z * ( 1.0 + hsl.y );
+		} else {
+			temp2 = ( hsl.z + hsl.y ) - ( hsl.z * hsl.y );
+		}
+		temp1 = 2 * hsl.z - temp2;
+
+		tempr = hsl.x + 1.0 / 3.0;
+		if( tempr > 1.0 ) {
+			tempr -= 1.0;
+		}
+		tempg = hsl.x;
+		tempb = hsl.x - 1.0 / 3.0;
+		if( tempb < 0.0 ) {
+			tempb += 1.0;
+		}
+
+		// Red
+		if( tempr < 1.0 / 6.0 ) {
+			rgb.r = temp1 + ( temp2 - temp1 ) * 6.0 * tempr;
+		} else if ( tempr < 0.5 ) {
+			rgb.r = temp2;
+		} else if ( tempr < 2.0 / 3.0 ) {
+			rgb.r = temp1 + ( temp2 - temp1 ) * ( ( 2.0 / 3.0 ) - tempr ) * 6.0;
+		} else {
+			rgb.r = temp1;
+		}
+
+		// Green
+		if( tempg < 1.0 / 6.0 ) {
+			rgb.g = temp1 + ( temp2 - temp1 ) * 6.0 * tempg;
+		} else if ( tempg < 0.5 ) {
+			rgb.g = temp2;
+		} else if ( tempg < 2.0 / 3.0 ) {
+			rgb.g = temp1 + ( temp2 - temp1 ) * ( ( 2.0 / 3.0 ) - tempg ) * 6.0;
+		} else {
+			rgb.g = temp1;
+		}
+
+		// Blue
+		if( tempb < 1.0 / 6.0 ) {
+			rgb.b = temp1 + ( temp2 - temp1 ) * 6.0 * tempb;
+		} else if ( tempb < 0.5 ) {
+			rgb.b = temp2;
+		} else if ( tempb < 2.0 / 3.0 ) {
+			rgb.b = temp1 + ( temp2 - temp1 ) * ( ( 2.0 / 3.0 ) - tempb ) * 6.0;
+		} else {
+			rgb.b = temp1;
+		}
+	}
+
+	return rgb;
 }
-
-

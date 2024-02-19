@@ -84,6 +84,10 @@ bool Application::Initialization( unsigned int window_width,
     ResourceManager::GetShader( "ColorMedian" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "ColorMedianOutput" );
 
+    ResourceManager::LoadShader( "Resource/Shaders/EnhancedSaturation.glsl", "EnhancedSaturation" );
+    ResourceManager::GetShader( "EnhancedSaturation" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "EnhancedSaturationOutput" );
+
     ResourceManager::LoadShader( "Resource/Shaders/SimpleUpscale.glsl", "SimpleUpscale" );
     ResourceManager::GetShader( "SimpleUpscale" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( upscale_width, upscale_height, "SimpleUpscaleOutput" );
@@ -274,6 +278,15 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
     }
 
+    // Filter - Enhanced Saturation
+    if( g_ProgramControls.m_bEnhanceSaturation == true ) {
+        ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->Bind();
+        ResourceManager::GetShader( "EnhancedSaturation" )->Use();
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
+    }
+
     // Filter - Histogram Spread
     if( g_ProgramControls.m_bHistoramSpread == true ) {
         //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->Bind();
@@ -281,6 +294,12 @@ void Application::Render() {
         //m_pQuad->RenderQuad();
         //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->Unbind();
         //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->BindTexture( 0 );
+
+        // Step 1 - Collect histogram from all three colors
+        // Step 2 - ReadPixels to CPU of three histograms
+        // Step 3 - Create backprojection maps based on inputs
+        // Step 4 - Send reprojection maps to the GPU
+        // Step 5 - Update image based on three reprojection maps
     }
 
     // Image Upscalers

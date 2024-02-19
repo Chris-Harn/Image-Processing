@@ -87,13 +87,15 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     // Set window position
     if( windowNumber == 0 ) {
         // Main Window
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 1.2 ), int( m_BufferHeight * 0.7f ) );
+        //glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.7f ), int( m_BufferHeight * 0.7f ) );
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.45f ), int( m_BufferHeight * 0.3f ) );
     } else if( windowNumber == 1) {
         // Playback Window
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.7f ) );
+        //glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.7f ) );
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.05f ), int( m_BufferHeight * 0.05f ) );
     } else {
         // GUI
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.4f ) );
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.1f ), int( m_BufferHeight * 0.7f ) );
     }
 
     // Turn off vsync
