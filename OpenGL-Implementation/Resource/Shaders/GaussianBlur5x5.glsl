@@ -32,7 +32,7 @@ vec2 offsets[25] = vec2[]
 	vec2( -offset_x * 2,  -offset_y * 2 ), vec2( -offset_x, -offset_y * 2 ), vec2( 0.0f, -offset_y * 2 ), vec2( offset_x, -offset_y * 2 ), vec2( offset_x * 2, -offset_y * 2 )
 );
 
-// Low pass filter
+// Low Pass Filter
 float modifier = ( 1.0f / 256.0f ); 
 float kernel[25] = float[]
 (
@@ -43,10 +43,20 @@ float kernel[25] = float[]
 	 1 * modifier,  4 * modifier,  6 * modifier,  4 * modifier,  1 * modifier
 );
 
+// Box Blur
+float kernel2[25] = float[]
+(
+	 0, 0, 0, 0, 0,
+	 0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 0,
+	 0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 0,
+	 0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 0,
+	 0, 0, 0, 0, 0
+);
+
 void main() {
 	vec3 color = vec3( 0.0f );
 	for( int i = 0; i < 25; i++ )
-		color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel[i];
+		color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel1[i];
 
-	FragColor = vec4( color, 1.0 );
+	FragColor = min(max(vec4( color, 1.0 ), 0.0), 1.0);
 }

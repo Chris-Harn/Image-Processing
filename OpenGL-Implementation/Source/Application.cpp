@@ -88,6 +88,18 @@ bool Application::Initialization( unsigned int window_width,
     ResourceManager::GetShader( "EnhancedSaturation" )->SetInteger( "u_Texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "EnhancedSaturationOutput" );
 
+    ResourceManager::LoadShader( "Resource/Shaders/CollectHistogram.glsl", "CollectHistogram" );
+    ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_imageWidth", window_width, true );
+    ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 0, true );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputR" );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputG" );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputB" );
+    //ResourceManager::LoadShader( "Resource/Shaders/EnhancedSaturation.glsl", "BackprojectionMapUpdate" );
+    //ResourceManager::GetShader( "BackprojectionMapUpdate" )->SetInteger( "u_Texture", 0, true );
+    //ResourceManager::GetShader( "BackprojectionMapUpdate" )->SetInteger( "u_Backprojection", 1, true );
+    //ResourceManager::CreateFramebuffer( window_width, window_height, "BackprojectionOutput" );
+
     ResourceManager::LoadShader( "Resource/Shaders/SimpleUpscale.glsl", "SimpleUpscale" );
     ResourceManager::GetShader( "SimpleUpscale" )->SetInteger( "u_texture", 0, true );
     ResourceManager::CreateFramebuffer( upscale_width, upscale_height, "SimpleUpscaleOutput" );
@@ -297,6 +309,25 @@ void Application::Render() {
         //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->BindTexture( 0 );
 
         // Step 1 - Collect histogram from all three colors
+        // Red
+        glViewport( 0, 0, 512, 1 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Bind();
+        ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 0, true );
+        glDrawArrays( GL_POINTS, 0, 640 * 480 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Unbind();
+
+        // Green
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputG" )->Bind();
+        ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 1, true );
+        glDrawArrays( GL_POINTS, 0, 640 * 480 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputG" )->Unbind();
+        
+        // Blue
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputB" )->Bind();
+        ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 2, true );
+        glDrawArrays( GL_POINTS, 0, 640 * 480 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputB" )->Unbind();
+
         // Step 2 - ReadPixels to CPU of three histograms
         // Step 3 - Create backprojection maps based on inputs
         // Step 4 - Send reprojection maps to the GPU

@@ -26,7 +26,7 @@ struct ProgramControls {
     bool m_bcolorMedian = true;
 
     // Low Pass Filter
-    bool m_bguassianBlur = true;
+    bool m_bguassianBlur = false;
 
     // Simple Sharpen Filter
     bool m_bsharpeningPass = true;
