@@ -201,6 +201,7 @@
     <ClInclude Include="Resource\Shaders\EnhancedSaturation.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resource\Shaders\BackProjectionUpdate.glsl" />
     <None Include="Resource\Shaders\CollectHistogram.glsl" />
     <None Include="Resource\Shaders\AntiAliasing.glsl" />
     <None Include="Resource\Shaders\BicubicLagrangeUpscale.glsl" />

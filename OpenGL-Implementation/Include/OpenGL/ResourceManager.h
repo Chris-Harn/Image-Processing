@@ -22,7 +22,7 @@ public:
     static Shader* LoadShader( const char *vShaderFile, const char *fShaderFile, const char *gShaderFile, std::string name );
     static Shader* LoadShader( const char *ShaderFile, std::string name );
     static Shader* GetShader( std::string name );
-    static Framebuffer* CreateFramebuffer( int width, int height, std::string name );
+    static Framebuffer* CreateFramebuffer( int width, int height, std::string name, bool texture = false );
     static Framebuffer* GetFramebuffer( std::string name );
     static Texture* LoadTexture( const char *file, bool alpha, std::string name, bool flipImage );
     static Texture* GetTexture( std::string name );

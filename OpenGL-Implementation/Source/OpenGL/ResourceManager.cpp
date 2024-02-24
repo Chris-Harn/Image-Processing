@@ -55,8 +55,8 @@ Shader* ResourceManager::GetShader( std::string name ) {
     return m_Shaders[name];
 }
 
-Framebuffer* ResourceManager::CreateFramebuffer( int width, int height, std::string name ) {
-    Framebuffer *newFrameBuffer = new Framebuffer( width, height );
+Framebuffer* ResourceManager::CreateFramebuffer( int width, int height, std::string name, bool texture ) {
+    Framebuffer *newFrameBuffer = new Framebuffer( width, height, texture );
 
     m_Framebuffers[name] = newFrameBuffer;
     return m_Framebuffers[name];

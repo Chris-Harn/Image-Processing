@@ -6,7 +6,7 @@
 class Framebuffer {
 public:
     Framebuffer();
-    Framebuffer( unsigned int fbo_width, unsigned int fbo_height );
+    Framebuffer( unsigned int fbo_width, unsigned int fbo_height, bool texture );
     ~Framebuffer();
 
     void Bind();

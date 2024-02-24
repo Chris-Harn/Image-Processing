@@ -11,7 +11,7 @@ Framebuffer::Framebuffer() {
     m_Height = 0;
 }
 
-Framebuffer::Framebuffer( unsigned int fbo_width, unsigned int fbo_height ) {
+Framebuffer::Framebuffer( unsigned int fbo_width, unsigned int fbo_height, bool texture ) {
     m_FboID = 0;
     m_TextureID = 0;
     m_Width = fbo_width;
@@ -23,9 +23,17 @@ Framebuffer::Framebuffer( unsigned int fbo_width, unsigned int fbo_height ) {
     glGenTextures( 1, &m_TextureID );
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, m_TextureID );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_SHORT, nullptr );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+    if( texture == false ) {
+        // Will always normalize all values [0.0f, 1.0f] when shader finishes
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_SHORT, nullptr );
+    } else {
+        // Allows floats values to reside in texture
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, nullptr );
+    }
+    
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 

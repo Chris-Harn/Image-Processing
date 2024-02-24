@@ -12,6 +12,8 @@
 #include "VideoLoader.h"
 #include "VideoPlayer.h"
 
+#include <iostream>
+
 Application *Application::s_pInstance = 0;
 
 ProgramControls g_ProgramControls;
@@ -90,15 +92,16 @@ bool Application::Initialization( unsigned int window_width,
 
     ResourceManager::LoadShader( "Resource/Shaders/CollectHistogram.glsl", "CollectHistogram" );
     ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_Texture", 0, true );
-    ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_imageWidth", window_width, true );
     ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 0, true );
-    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputR" );
-    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputG" );
-    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputB" );
-    //ResourceManager::LoadShader( "Resource/Shaders/EnhancedSaturation.glsl", "BackprojectionMapUpdate" );
-    //ResourceManager::GetShader( "BackprojectionMapUpdate" )->SetInteger( "u_Texture", 0, true );
-    //ResourceManager::GetShader( "BackprojectionMapUpdate" )->SetInteger( "u_Backprojection", 1, true );
-    //ResourceManager::CreateFramebuffer( window_width, window_height, "BackprojectionOutput" );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputR", true );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputG", true );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputB", true );
+
+    ResourceManager::LoadShader( "Resource/Shaders/BackProjectionUpdate.glsl", "BackProjection" );
+    ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_Texture", 0, true );
+    ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_BackProjection", 0, true );
+    ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_color", 0, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "BackProjectionOutput" );
 
     ResourceManager::LoadShader( "Resource/Shaders/SimpleUpscale.glsl", "SimpleUpscale" );
     ResourceManager::GetShader( "SimpleUpscale" )->SetInteger( "u_texture", 0, true );
@@ -251,8 +254,8 @@ void Application::Render() {
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
 
-    m_pMainWindow->MakeCurrentContext();
-    m_pMainWindow->ClearColorBuffer();
+    //m_pMainWindow->MakeCurrentContext();
+    //m_pMainWindow->ClearColorBuffer();
 
     // Update input gamma
     if( g_ProgramControls.m_binputGamma == true ) {
@@ -300,38 +303,62 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
     }
 
-    // Filter - Histogram Spread
+    // Filter - Histogram Equalization
     if( g_ProgramControls.m_bHistoramSpread == true ) {
-        //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->Bind();
-        //ResourceManager::GetShader( "HistogramSpread" )->Use();
-        //m_pQuad->RenderQuad();
-        //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->Unbind();
-        //ResourceManager::GetFramebuffer( "HistogramSpreadOutput" )->BindTexture( 0 );
+        // Setup render state
+        glEnable( GL_BLEND );
+        glDisable( GL_POINT_SMOOTH );
+        glBlendFunc( GL_ONE, GL_ONE );
+        glBlendEquation(GL_FUNC_ADD);
+        glEnable( GL_PROGRAM_POINT_SIZE );
 
-        // Step 1 - Collect histogram from all three colors
+        static GLfloat redHistogram[512];
+        static unsigned short int greenHistogram[512];
+        static unsigned short int blueHistogram[512];
+
+        // zero out histogram
+        for( int i = 0; i < 512; i++ ) {
+            redHistogram[i] = 0.0f;
+            //greenHistogram[i] = 0;
+            //blueHistogram[i] = 0;
+        }
+
+        // Step 1 - Collect histogram from all three colors 
+        // and ReadPixels to CPU of three histograms
         // Red
         glViewport( 0, 0, 512, 1 );
         ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Bind();
         ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 0, true );
+        glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT );
         glDrawArrays( GL_POINTS, 0, 640 * 480 );
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Unbind();
+        glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, redHistogram );
 
-        // Green
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputG" )->Bind();
-        ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 1, true );
-        glDrawArrays( GL_POINTS, 0, 640 * 480 );
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputG" )->Unbind();
+        //// Green
+
+        //// Blue
+
+        // Set back statemachine that would affect other filters
+        glDisable( GL_BLEND );
+        glViewport( 0, 0, 640, 480 );
+
+        // Step 2 - Create backprojection maps based on inputs
+        // Cummative Sum histogram to create backprojection map
+        float sum = 0.0f;
+        float scaleFactor = 511.0 / ( 640 * 480 );
+        float backProjection[512];
+        for( int i = 0; i < 512; i++ ) {
+            sum += redHistogram[i];
+            backProjection[i] = ( sum * scaleFactor ) + 0.5;
+        }
+
+        // Step 3 - Send reprojection maps to the GPU
         
-        // Blue
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputB" )->Bind();
-        ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 2, true );
-        glDrawArrays( GL_POINTS, 0, 640 * 480 );
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputB" )->Unbind();
 
-        // Step 2 - ReadPixels to CPU of three histograms
-        // Step 3 - Create backprojection maps based on inputs
-        // Step 4 - Send reprojection maps to the GPU
-        // Step 5 - Update image based on three reprojection maps
+        // Step 4 - Update image based on three reprojection maps
+
+        //ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
+
     }
 
     // Image Upscalers
