@@ -31,13 +31,13 @@ bool Window::Initialization( unsigned int width, unsigned int height,
             return false;
         }
         
-        // Setup GLFW window properties with OpenGL version
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-        glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-        // Core profile = No backwards compatibility and best performance
-        glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-        // Allow forward compatiblity
-        glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+        //// Setup GLFW window properties with OpenGL version
+        //glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+        //glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
+        //// Core profile = No backwards compatibility and best performance
+        //glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+        //// Allow forward compatiblity
+        //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
 
         // Lock current aspect ratio - Must be before window creation
         glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );

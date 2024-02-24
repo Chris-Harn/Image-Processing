@@ -14,16 +14,12 @@ vec3 HSLToRGB( vec3 hsl );
 
 void main() {
 	vec3 hsl = RGBToHSL( texture( u_Texture, FragCoord ).rgb );
-
-	//hsl.z = clamp( texture( u_BackProjection, vec2( hsl.z + shift, 0 ) ).r, 0.0, 1.0 );
+	
 	hsl.z += 0.03;
+	//hsl.z = texture( u_BackProjection, vec2( hsl.z + shift, 0 ) ).r;
+	//hsl.z = clamp( texture( u_BackProjection, vec2( hsl.z, 0 ) ).r, 0.0, 1.0 );
 
-	//hsl.z = clamp( hsl.z, 0.0, 1.0 );
-
-	FragColor = vec4 ( HSLToRGB( hsl ), 1.0 );
-
-	// Cap as some values are sampled outside frame
-	FragColor = clamp( FragColor, 0.0, 1.0 );
+	FragColor = clamp( vec4 ( HSLToRGB( hsl ), 1.0 ), 0.0, 1.0);
 }
 
 vec3 RGBToHSL( vec3 rgb ) {

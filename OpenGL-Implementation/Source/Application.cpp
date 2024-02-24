@@ -324,10 +324,12 @@ void Application::Render() {
         glEnable( GL_PROGRAM_POINT_SIZE );
 
         static GLfloat histogram[512];
+        static GLfloat backProjection[512];
 
         // zero out histogram
         for( int i = 0; i < 512; i++ ) {
             histogram[i] = 0.0f;
+            backProjection[i] = 0.0f;
         }
 
         // Step 1 - Collect histogram from all three colors 
@@ -343,7 +345,6 @@ void Application::Render() {
 
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 0 );
-
 
         // Set back statemachine that would affect other filters
         glDisable( GL_BLEND );
@@ -361,7 +362,6 @@ void Application::Render() {
         }
         
         float sum = 0.0f;
-        static GLfloat backProjection[512];
         float scaleFactor = 511.0f / ( count );
         //std::cout << "Printing backprojection... " << std::endl;
         for( int i = 0; i < 512; i++ ) {
