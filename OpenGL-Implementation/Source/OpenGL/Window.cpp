@@ -30,7 +30,7 @@ bool Window::Initialization( unsigned int width, unsigned int height,
             glfwTerminate();
             return false;
         }
-        /*
+        
         // Setup GLFW window properties with OpenGL version
         glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
         glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
@@ -38,7 +38,6 @@ bool Window::Initialization( unsigned int width, unsigned int height,
         glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
         // Allow forward compatiblity
         glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-        */
 
         // Lock current aspect ratio - Must be before window creation
         glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
@@ -84,15 +83,14 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     // Tell window to stay open
     glfwSetWindowShouldClose( m_pWindow, GL_FALSE );
 
-    // Set window position
+    // Set window position - Note: Rework to always draw playback window in top left corner,
+    // and main window in bottom right corner.
     if( windowNumber == 0 ) {
         // Main Window
-        //glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.7f ), int( m_BufferHeight * 0.7f ) );
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.45f ), int( m_BufferHeight * 0.3f ) );
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.50f ), int( m_BufferHeight * 0.05f ) );
     } else if( windowNumber == 1) {
         // Playback Window
-        //glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.2f ), int( m_BufferHeight * 0.7f ) );
-        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.05f ), int( m_BufferHeight * 0.05f ) );
+        glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.03f ), int( m_BufferHeight * 0.07f ) );
     } else {
         // GUI
         glfwSetWindowPos( m_pWindow, int( m_BufferWidth * 0.1f ), int( m_BufferHeight * 0.7f ) );
@@ -137,16 +135,19 @@ void Window::HandleKeys( GLFWwindow *window, int key, int code, int action, int 
     //if( key == GLFW_KEY_Z ) StepBackwards();
     //if( key == GLFW_KEY_X ) StepForwards();
 
-    //if( ( key >= 0 ) && ( key < 1024 ) ) {
-    //    if( action == GLFW_PRESS ) {
-    //        theWindow->m_bKeys[key] = true;
-    //        printf( "Pressed: %d\n", key );
-    //    }
-    //    else if( action == GLFW_RELEASE ) {
-    //        theWindow->m_bKeys[key] = false;
-    //        printf( "Released: %d\n", key );
-    //    }
-    //}
+    #ifdef _DEBUG
+        // Note: Convert to Logger 
+        if( ( key >= 0 ) && ( key < 1024 ) ) {
+            if( action == GLFW_PRESS ) {
+                theWindow->m_bKeys[key] = true;
+                printf( "Pressed: %d\n", key );
+            }
+            else if( action == GLFW_RELEASE ) {
+                theWindow->m_bKeys[key] = false;
+                printf( "Released: %d\n", key );
+            }
+        }
+    #endif
 }
 
 void Window::HandleFramebufferResize( GLFWwindow *window, int width, int height ) {
