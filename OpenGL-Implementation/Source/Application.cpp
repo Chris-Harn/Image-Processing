@@ -253,9 +253,9 @@ void Application::Render() {
     m_pQuad->RenderQuad();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Unbind();
     ResourceManager::GetFramebuffer( "OriginalVideo" )->BindTexture( 0 );
-
-    //m_pMainWindow->MakeCurrentContext();
-    //m_pMainWindow->ClearColorBuffer();
+    
+    // Save so can jump straight to last framebuffer
+    ResourceManager::SaveLastFramebuffer( "OriginalVideo" );
 
     // Update input gamma
     if( g_ProgramControls.m_binputGamma == true ) {
@@ -264,6 +264,9 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "GammaInput" )->Unbind();
         ResourceManager::GetFramebuffer( "GammaInput" )->BindTexture( 0 );
+
+        // Save so can jump straight to last framebuffer
+        ResourceManager::SaveLastFramebuffer( "GammaInput" );
     }
 
     // Filter - Color Median
@@ -273,6 +276,9 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "ColorMedianOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "ColorMedianOutput" )->BindTexture( 0 );
+
+        // Save so can jump straight to last framebuffer
+        ResourceManager::SaveLastFramebuffer( "ColorMedianOutput" );
     }
 
     // Filter - Guassian Blur 5x5
@@ -282,6 +288,9 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BlurOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BlurOutput" )->BindTexture( 0 );
+
+        // Save so can jump straight to last framebuffer
+        ResourceManager::SaveLastFramebuffer( "BlurOutput" );
     }
 
     // Filter - Simple Sharpen
@@ -291,6 +300,9 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "SharpenOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "SharpenOutput" )->BindTexture( 0 );
+
+        // Save so can jump straight to last framebuffer
+        ResourceManager::SaveLastFramebuffer( "SharpenOutput" );
     }
 
     // Filter - Enhanced Saturation
@@ -301,6 +313,9 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
+
+        // Save so can jump straight to last framebuffer
+        ResourceManager::SaveLastFramebuffer( "EnhancedSaturationOutput" );
     }
 
     // Filter - Histogram Equalization
@@ -368,7 +383,7 @@ void Application::Render() {
 
         // Step 4 - Update image based on three reprojection maps
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Bind();
-        ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
         ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 1 );
         ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_color", 0, true );
         m_pQuad->RenderQuad();

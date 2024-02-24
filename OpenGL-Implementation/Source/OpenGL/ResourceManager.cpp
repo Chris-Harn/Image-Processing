@@ -7,10 +7,11 @@
 #include "stb_image.h"
 
 // Initialize static variables
-std::map<std::string, std::string>         ResourceManager::m_ShaderFilePaths;
-std::map<std::string, Texture*>            ResourceManager::m_Textures;
-std::map<std::string, Shader*>             ResourceManager::m_Shaders;
-std::map<std::string, Framebuffer*>        ResourceManager::m_Framebuffers;
+std::map<std::string, std::string>    ResourceManager::m_ShaderFilePaths;
+std::map<std::string, Texture*>       ResourceManager::m_Textures;
+std::map<std::string, Shader*>        ResourceManager::m_Shaders;
+std::map<std::string, Framebuffer*>   ResourceManager::m_Framebuffers;
+std::map<std::string, Framebuffer*>   ResourceManager::m_LastFramebuffer;
 
 enum class ShaderType {
     NONE = -1,
@@ -64,6 +65,19 @@ Framebuffer* ResourceManager::CreateFramebuffer( int width, int height, std::str
 
 Framebuffer* ResourceManager::GetFramebuffer( std::string name ) {
     return m_Framebuffers[name];
+}
+
+void ResourceManager::SaveLastFramebuffer( std::string name ) {
+    // Clear last shader
+    m_LastFramebuffer.clear();
+
+    m_LastFramebuffer[name] = m_Framebuffers[name];
+}
+
+Framebuffer* ResourceManager::GetLastFramebuffer() {
+    for( auto iter : m_LastFramebuffer ) return iter.second;
+
+    return nullptr;
 }
 
 Texture* ResourceManager::LoadTexture( const char *file, bool alpha, std::string name, bool flipImage ) {

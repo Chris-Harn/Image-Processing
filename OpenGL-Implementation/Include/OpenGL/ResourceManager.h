@@ -14,16 +14,19 @@
 class ResourceManager {
 public:
     // Resource Storage
-    static std::map<std::string, std::string> m_ShaderFilePaths;
-    static std::map<std::string, Shader*>      m_Shaders;
-    static std::map<std::string, Framebuffer*> m_Framebuffers;
-    static std::map<std::string, Texture*>     m_Textures;
+    static std::map<std::string, std::string>   m_ShaderFilePaths;
+    static std::map<std::string, Shader*>       m_Shaders;
+    static std::map<std::string, Framebuffer*>  m_Framebuffers;
+    static std::map<std::string, Framebuffer *> m_LastFramebuffer;
+    static std::map<std::string, Texture*>      m_Textures;
 
     static Shader* LoadShader( const char *vShaderFile, const char *fShaderFile, const char *gShaderFile, std::string name );
     static Shader* LoadShader( const char *ShaderFile, std::string name );
     static Shader* GetShader( std::string name );
     static Framebuffer* CreateFramebuffer( int width, int height, std::string name, bool texture = false );
     static Framebuffer* GetFramebuffer( std::string name );
+    static void SaveLastFramebuffer( std::string name );
+    static Framebuffer *GetLastFramebuffer();
     static Texture* LoadTexture( const char *file, bool alpha, std::string name, bool flipImage );
     static Texture* GetTexture( std::string name );
     static void CleanUp(); // properly de-allocates all loaded resources

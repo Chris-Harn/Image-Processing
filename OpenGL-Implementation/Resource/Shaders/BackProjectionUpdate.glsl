@@ -27,7 +27,7 @@ void main() {
 	//xyz = clamp( xyz, 0.0, 1.0 );
 
 	//xyz.x = clamp( texture( u_BackProjection, vec2( xyz.x + shift, 0 ) ).r, 0.0, 1.0 );
-	xyz.x += 0.08;
+	xyz.x += 0.03;
 
 	xyz.x = clamp( xyz.x, 0.0, 1.0 );
 
