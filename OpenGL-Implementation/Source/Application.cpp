@@ -92,15 +92,11 @@ bool Application::Initialization( unsigned int window_width,
 
     ResourceManager::LoadShader( "Resource/Shaders/CollectHistogram.glsl", "CollectHistogram" );
     ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_Texture", 0, true );
-    ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 0, true );
-    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputR", true );
-    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputG", true );
-    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutputB", true );
+    ResourceManager::CreateFramebuffer( 512, 1, "CollectHistogramOutput", true );
 
     ResourceManager::LoadShader( "Resource/Shaders/BackProjectionUpdate.glsl", "BackProjection" );
     ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_Texture", 0, true );
-    ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_BackProjection", 0, true );
-    ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_color", 0, true );
+    ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_BackProjection", 1, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "BackProjectionOutput" );
 
     ResourceManager::LoadShader( "Resource/Shaders/SimpleUpscale.glsl", "SimpleUpscale" );
@@ -327,33 +323,27 @@ void Application::Render() {
         glBlendEquation(GL_FUNC_ADD);
         glEnable( GL_PROGRAM_POINT_SIZE );
 
-        static GLfloat redHistogram[512];
-        static unsigned short int greenHistogram[512];
-        static unsigned short int blueHistogram[512];
+        static GLfloat histogram[512];
 
         // zero out histogram
         for( int i = 0; i < 512; i++ ) {
-            redHistogram[i] = 0.0f;
-            //greenHistogram[i] = 0;
-            //blueHistogram[i] = 0;
+            histogram[i] = 0.0f;
         }
 
         // Step 1 - Collect histogram from all three colors 
         // and ReadPixels to CPU of three histograms
         // Red
         glViewport( 0, 0, 512, 1 );
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Bind();
-        ResourceManager::GetShader( "CollectHistogram" )->SetInteger( "u_color", 0, true );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Bind();
+        ResourceManager::GetShader( "CollectHistogram" )->Use();
         glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT );
         glDrawArrays( GL_POINTS, 0, 640 * 480 );
-        glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, redHistogram );
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Unbind();
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 0 );
+        glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, histogram );
 
-        //// Green
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 0 );
 
-        //// Blue
 
         // Set back statemachine that would affect other filters
         glDisable( GL_BLEND );
@@ -363,7 +353,11 @@ void Application::Render() {
         // Cummative Sum histogram to create backprojection map
         float count = 0.0f;
         for( int i = 0; i < 512; i++ ) {
-            count += redHistogram[i];
+            count += histogram[i];
+        }
+
+        if( count < 1.0 ) {
+            count = 1.0;
         }
         
         float sum = 0.0f;
@@ -371,21 +365,21 @@ void Application::Render() {
         float scaleFactor = 511.0f / ( count );
         //std::cout << "Printing backprojection... " << std::endl;
         for( int i = 0; i < 512; i++ ) {
-            sum += redHistogram[i];
+            sum += histogram[i];
             backProjection[i] = ( ( sum * scaleFactor ) + 0.5f ) / 512.0f;
-            //std::cout << i << " = " << redHistogram[i] << "    back projection = " << backProjection[i] << "    sum = " << sum << std::endl;
+            //std::cout << i << " = " << histogram[i] << "    back projection = " << backProjection[i] << "    sum = " << sum << std::endl;
         }
         //std::cout << std::endl << std::endl;
 
         // Step 3 - Send reprojection maps to the GPU
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 0 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 0 );
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 1, GL_RED, GL_FLOAT, backProjection );
 
         // Step 4 - Update image based on three reprojection maps
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Bind();
-        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
-        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 1 );
-        ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_color", 0, true );
+        ResourceManager::GetShader( "BackProjection" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 ); // Last image filter output
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 1 ); // Final histogram
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->BindTexture( 0 );

@@ -29,7 +29,7 @@ Framebuffer::Framebuffer( unsigned int fbo_width, unsigned int fbo_height, bool 
         glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_SHORT, nullptr );
     } else {
         // Allows floats values to reside in texture
-        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA16F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, nullptr );
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA32F, m_Width, m_Height, 0, GL_RGBA, GL_FLOAT, nullptr );
     }
     
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );

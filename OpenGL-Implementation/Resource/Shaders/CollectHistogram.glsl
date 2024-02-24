@@ -5,21 +5,18 @@ layout ( location = 0 ) in vec2 aPos;
 layout ( location = 1 ) in vec2 aTexCoords;
 
 uniform sampler2D u_Texture;
-uniform int u_color;
 
-const mat3 RGB2CIE = mat3( 0.4124564, 0.3575761, 0.1804375,
-						   0.2126729, 0.7151522, 0.0721750,
-						   0.0193339, 0.1191920, 0.9503041 );
-
-vec3 RGBToCIEXYZ( vec3 rgb );
+vec3 RGBToHSL( vec3 rgb );
+vec3 HSLToRGB( vec3 hsl );
 
 void main() {
 	ivec2 imDims = textureSize( u_Texture, 0 );
 	ivec2 imageCoordinates = ivec2( ( gl_VertexID ) % imDims.x, ( gl_VertexID ) / imDims.x );
 
-	vec3 xyz = RGBToCIEXYZ( texelFetch( u_Texture, imageCoordinates, 0 ).rgb );
+	vec3 hsl = RGBToHSL( texelFetch( u_Texture, imageCoordinates, 0 ).rgb );
 
-	float intensity = clamp( xyz.x, 0.0, 1.0 );
+	// Scatter Luminance
+	float intensity = clamp( hsl.z, 0.0, 1.0 );
 
 	// Shift so histogram fits 0 to 511
 	intensity *= 0.9998;
@@ -28,17 +25,49 @@ void main() {
 	gl_PointSize = 1.0;
 }
 
-// Takes in a RGB color(0-1.0) and returns it in CIE-XYZ format(Yxy).
-// Y is luminance, x & y are chromatic info
-vec3 RGBToCIEXYZ(vec3 rgb) {	
-	vec3 xyz = RGB2CIE * rgb;
-	vec3 Yxy;
-	Yxy.r = xyz.g;
-	float temp = dot(vec3(1.0), xyz);
-	Yxy.gb = xyz.rg / temp;
+vec3 RGBToHSL( vec3 rgb ) {
+	vec3 hsl = vec3( 0.0 );
 
-	return Yxy;
+	float minValue = min( rgb.r, min( rgb.g, rgb.b ) );
+	float maxValue = max( rgb.r, max( rgb.g, rgb.b ) );
+
+	// Calculate luminance
+	hsl.z = ( maxValue + minValue ) / 2.0;
+	if( maxValue > minValue ) {
+		float delta = maxValue - minValue;
+
+		// Calculate saturation
+		if( hsl.z > 0.5 ) {
+			hsl.y = delta / ( 2.0 - maxValue - minValue );
+		} else {
+			hsl.y = delta / ( maxValue + minValue );
+		}
+
+		// Calculate hue
+		if( rgb.r == maxValue ) {
+			hsl.x = ( rgb.g - rgb.b ) / delta;
+		} else if( rgb.g == maxValue ) {
+			hsl.x = 2.0 + ( rgb.b - rgb.r ) / delta;
+		} else {
+			hsl.x = 4.0 + ( rgb.r - rgb.g ) / delta;
+		}
+
+		if( hsl.x < 0.0 ) {
+			hsl.x += 6.0;
+		}
+		hsl.x /= 6.0;
+	}
+
+	return hsl;
 }
+
+vec3 HSLToRGB( vec3 hsl ) {
+	vec3 rgb = clamp( abs( mod( hsl.x * 6.0 + vec3( 0.0, 4.0, 2.0 ), 6.0 ) - 3.0 ) - 1.0, 0.0, 1.0 );
+	rgb = hsl.z + hsl.y * ( rgb - 0.5 ) * ( 1.0 - abs( 2.0 * hsl.z - 1.0 ) );
+
+	return rgb;
+}
+
 
 #shader fragment
 #version 450 core
