@@ -333,6 +333,8 @@ void Application::Render() {
         glClear( GL_COLOR_BUFFER_BIT );
         glDrawArrays( GL_POINTS, 0, 640 * 480 );
         glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, redHistogram );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->Unbind();
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 0 );
 
         //// Green
 
@@ -344,21 +346,34 @@ void Application::Render() {
 
         // Step 2 - Create backprojection maps based on inputs
         // Cummative Sum histogram to create backprojection map
+        float count = 0.0f;
+        for( int i = 0; i < 512; i++ ) {
+            count += redHistogram[i];
+        }
+        
         float sum = 0.0f;
-        float scaleFactor = 511.0 / ( 640 * 480 );
-        float backProjection[512];
+        static GLfloat backProjection[512];
+        float scaleFactor = 511.0f / ( count );
+        //std::cout << "Printing backprojection... " << std::endl;
         for( int i = 0; i < 512; i++ ) {
             sum += redHistogram[i];
-            backProjection[i] = ( sum * scaleFactor ) + 0.5;
+            backProjection[i] = ( ( sum * scaleFactor ) + 0.5f ) / 512.0f;
+            //std::cout << i << " = " << redHistogram[i] << "    back projection = " << backProjection[i] << "    sum = " << sum << std::endl;
         }
+        //std::cout << std::endl << std::endl;
 
         // Step 3 - Send reprojection maps to the GPU
-        
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 0 );
+        glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 1, GL_RED, GL_FLOAT, backProjection );
 
         // Step 4 - Update image based on three reprojection maps
-
-        //ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
-
+        ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Bind();
+        ResourceManager::GetFramebuffer( "EnhancedSaturationOutput" )->BindTexture( 0 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutputR" )->BindTexture( 1 );
+        ResourceManager::GetShader( "BackProjection" )->SetInteger( "u_color", 0, true );
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "BackProjectionOutput" )->BindTexture( 0 );
     }
 
     // Image Upscalers

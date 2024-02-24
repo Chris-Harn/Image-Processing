@@ -58,5 +58,5 @@ void main() {
 	for( int i = 0; i < 25; i++ )
 		color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel[i];
 
-	FragColor = min(max(vec4( color, 1.0 ), 0.0), 1.0);
+	FragColor = clamp( vec4( color, 1.0 ), 0.0, 1.0);
 }
