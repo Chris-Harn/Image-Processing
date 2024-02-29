@@ -26,7 +26,7 @@ struct ProgramControls {
     bool m_bcolorMedian = true;
 
     // Low Pass Filter
-    bool m_bguassianBlur = false;
+    bool m_bguassianBlur = true;
 
     // Simple Sharpen Filter
     bool m_bsharpeningPass = true;
@@ -50,6 +50,7 @@ struct ProgramControls {
     // ******* Histogram Manipulation *******
     bool m_bHistoramSpread = true;
     float m_histogram[512];
+    float m_stretchHistogram[512];
     float m_backProjection[512];
 
     // ******* Image Upscalers *******

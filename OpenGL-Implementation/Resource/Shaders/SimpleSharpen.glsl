@@ -30,36 +30,18 @@ vec2 offsets[9] = vec2[]
 	vec2( -offset_x, -offset_y ), vec2( 0.0f, -offset_y ), vec2( offset_x, -offset_y )
 );
 
-// High pass filter
+// Sharpened filter
 float kernel[9] = float[]
 (
-	  0,  -0.5,  0,
-	 -0.5,   3, -0.5,
-	  0,  -0.5,  0
-);
-
-// Sharpened filter (2 * identiy - blur )
-float kernel2[9] = float[]
-(
 	  -1.0,  -1.0,  -1.0,
-	  -1.0,    17,  -1.0,
+	  -1.0,    9,  -1.0,
 	  -1.0,  -1.0,  -1.0
-);
-
-// Sharpened filter (2 * identiy - gaussian blur )
-float kernel3[9] = float[]
-(
-	  -0.0023,  -0.0432,  -0.0023,
-	  -0.0432,   0.8180,  -0.0432,
-	  -0.0023,  -0.0432,  -0.0023
 );
 
 void main() {
 	vec3 color = vec3( 0.0f );
 	for( int i = 0; i < 9; i++ )
-		//color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel[i];
-		color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel2[i] * 1.0 / 9.0;
-		//color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel3[i];
+		color += vec3( texture( u_Texture, FragCoord.st + offsets[i] ) ) * kernel[i];
 
 	FragColor = vec4( color, 1.0 );
 }

@@ -9,6 +9,7 @@ uniform sampler2D u_BackProjection;
 
 //float shift = 1.0 / 1024.0f;
 float shift = 1.0 / 2048.0f;
+//float shift = 1.0 / 512.0f;
 
 vec3 RGBToHSL( vec3 rgb );
 vec3 HSLToRGB( vec3 hsl );
@@ -16,9 +17,9 @@ vec3 HSLToRGB( vec3 hsl );
 void main() {
 	vec3 hsl = RGBToHSL( texture( u_Texture, FragCoord ).rgb );
 	
-	//hsl.z += 0.09;
-	//hsl.z = texture( u_BackProjection, vec2( hsl.z, 0 ) ).r;
-	//hsl.z = clamp( texture( u_BackProjection, vec2( hsl.z, 0 ) ).r, 0.0, 1.0 );
+	hsl.z += 0.03;
+	//hsl.z = texture( u_BackProjection, vec2( clamp( hsl.z + shift, 0.0, 1.0 ), 0 ) ).r;
+	//hsl.z = clamp( texture( u_BackProjection, vec2( clamp( hsl.z + shift, 0.0, 1.0 ), 0 ) ).r, 0.0, 1.0 );
 
 	FragColor = clamp( vec4 ( HSLToRGB( hsl ), 1.0 ), 0.0, 1.0);
 }
@@ -35,16 +36,16 @@ vec3 RGBToHSL( vec3 rgb ) {
 		float delta = maxValue - minValue;
 
 		// Calculate saturation
-		if( hsl.z > 0.5 ) {
+		if( hsl.z < 0.5 ) {
 			hsl.y = delta / ( 2.0 - maxValue - minValue );
 		} else {
 			hsl.y = delta / ( maxValue + minValue );
 		}
 
 		// Calculate hue
-		if( rgb.r == maxValue ) {
+		if( rgb.r + 0.01 > maxValue ) {
 			hsl.x = ( rgb.g - rgb.b ) / delta;
-		} else if( rgb.g == maxValue ) {
+		} else if( rgb.g + 0.01 > maxValue ) {
 			hsl.x = 2.0 + ( rgb.b - rgb.r ) / delta;
 		} else {
 			hsl.x = 4.0 + ( rgb.r - rgb.g ) / delta;

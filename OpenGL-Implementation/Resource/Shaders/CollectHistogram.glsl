@@ -37,16 +37,16 @@ vec3 RGBToHSL( vec3 rgb ) {
 		float delta = maxValue - minValue;
 
 		// Calculate saturation
-		if( hsl.z > 0.5 ) {
+		if( hsl.z < 0.5 ) {
 			hsl.y = delta / ( 2.0 - maxValue - minValue );
 		} else {
 			hsl.y = delta / ( maxValue + minValue );
 		}
 
 		// Calculate hue
-		if( rgb.r == maxValue ) {
+		if( rgb.r + 0.01 > maxValue ) {
 			hsl.x = ( rgb.g - rgb.b ) / delta;
-		} else if( rgb.g == maxValue ) {
+		} else if( rgb.g + 0.01 > maxValue ) {
 			hsl.x = 2.0 + ( rgb.b - rgb.r ) / delta;
 		} else {
 			hsl.x = 4.0 + ( rgb.r - rgb.g ) / delta;

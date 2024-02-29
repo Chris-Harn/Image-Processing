@@ -329,6 +329,7 @@ void Application::Render() {
         // zero out histogram
         for( int i = 0; i < 512; i++ ) {
             g_ProgramControls.m_histogram[i] = 0.0f;
+            g_ProgramControls.m_stretchHistogram[i] = 0.0f;
             g_ProgramControls.m_backProjection[i] = 0.0f;
         }
 
@@ -352,23 +353,12 @@ void Application::Render() {
 
         // Step 2 - Create backprojection maps based on inputs
         // Cummative Sum histogram to create backprojection map
-        //float count = 0.0f;
-        //for( int i = 0; i < 512; i++ ) {
-        //    count += g_ProgramControls.m_histogram[i];
-        //}
-
-        //if( count < 1.0 ) {
-        //    count = 1.0;
-        //}
-        
         float sum = 0.0f;
-        //float scaleFactor = 511.0f / ( count );
         float scaleFactor = 511.0f / ( 640 * 480 );
         //std::cout << "Printing backprojection... " << std::endl;
         for( int i = 0; i < 512; i++ ) {
             sum += g_ProgramControls.m_histogram[i];
             g_ProgramControls.m_backProjection[i] = ( ( sum * scaleFactor ) + 0.5f ) / 512.0f;
-            //g_ProgramControls.m_histogram[i] /= float( 640 * 480 );
 
             //if( i < 10 || i > 501 ) {
             //    std::cout << i << " = " << g_ProgramControls.m_histogram[i] << "    back projection = " << g_ProgramControls.m_backProjection[i] << "    sum = " << sum << std::endl;
@@ -379,6 +369,7 @@ void Application::Render() {
         // Step 3 - Send reprojection maps to the GPU
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 0 );
         glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 1, GL_RED, GL_FLOAT, g_ProgramControls.m_backProjection );
+        //glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 1, GL_RED, GL_FLOAT, g_ProgramControls.m_stretchHistogram );
 
         // Step 4 - Update image based on three reprojection maps
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Bind();
@@ -419,6 +410,16 @@ void Application::Render() {
         glViewport( 0, 0, 640, 480 );
     }
 
+    // Anti-Aliasing Filter
+    if( g_ProgramControls.m_bAntiAliasing == true ) {
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
+        ResourceManager::GetShader( "AntiAliasing" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
+    }
+
     // Image Upscalers
     if( g_ProgramControls.m_upscalerSelection == 0 ) {
         // Simple Interpolation
@@ -454,15 +455,15 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->BindTexture( 0 );
     }
 
-    // Anti-Aliasing Filter
-    if( g_ProgramControls.m_bAntiAliasing == true ) {
-        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
-        ResourceManager::GetShader( "AntiAliasing" )->Use();
-        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
-        m_pQuad->RenderQuad();
-        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
-        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
-    }
+    //// Anti-Aliasing Filter
+    //if( g_ProgramControls.m_bAntiAliasing == true ) {
+    //    ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
+    //    ResourceManager::GetShader( "AntiAliasing" )->Use();
+    //    ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
+    //    m_pQuad->RenderQuad();
+    //    ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
+    //    ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
+    //}
 
     // Update output gamma
     if( g_ProgramControls.m_boutputGamma == true ) {
