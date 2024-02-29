@@ -22,6 +22,7 @@ public:
     void ToggleVsync();
     void ClearColorBuffer();
     void SwapBuffers() { glfwSwapBuffers( m_pWindow ); }
+    void GetVersion();
     GLFWwindow *GetWindow() { return m_pWindow; }
     void MakeCurrentContext() { glfwMakeContextCurrent( m_pWindow ); }
 

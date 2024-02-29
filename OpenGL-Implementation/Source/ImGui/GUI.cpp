@@ -118,6 +118,21 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
 
         ImGui::LabelText( "Stage 3", "Histogram Manipulation" );
         ImGui::Checkbox( "On/Off Color Histogram Spread", &g_ProgramControls.m_bHistoramSpread );
+        if( g_ProgramControls.m_bHistoramSpread == true ) {
+            ImGui::Text( "Original Luminance" );
+            ImGui::PushItemWidth( -1 );
+            ImGui::PlotHistogram( "", g_ProgramControls.m_histogram, 512,
+                0, nullptr, 0.0f, float( 3000 ), ImVec2( 0, 80 ) );
+            ImGui::PopItemWidth();
+            ImGui::Text( "Updated Luminance" );
+            ImGui::PushItemWidth( -1 );
+            ImGui::PlotHistogram( "", g_ProgramControls.m_backProjection, 512,
+                0, nullptr, 0.0f, float( 3000 ), ImVec2( 0, 80 ) );
+            ImGui::PopItemWidth();     
+        }
+
+
+
         ImGui::Separator();
   
         ImGui::LabelText( "Stage 4", "Image Upscalers" );

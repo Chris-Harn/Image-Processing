@@ -47,6 +47,8 @@ bool Application::Initialization( unsigned int window_width,
         print_error_message( "ERROR: EXIT EARLY: Main window failed to initalize." );
         return false;
     }
+    m_pMainWindow->GetVersion();
+
     try { m_pQuad = new Quad(); }
     catch( const std::bad_alloc &e ) {
         (void)e;
@@ -322,14 +324,12 @@ void Application::Render() {
         glBlendFunc( GL_ONE, GL_ONE );
         glBlendEquation(GL_FUNC_ADD);
         glEnable( GL_PROGRAM_POINT_SIZE );
-
-        static GLfloat histogram[512];
-        static GLfloat backProjection[512];
+        glDepthMask( GL_FALSE );
 
         // zero out histogram
         for( int i = 0; i < 512; i++ ) {
-            histogram[i] = 0.0f;
-            backProjection[i] = 0.0f;
+            g_ProgramControls.m_histogram[i] = 0.0f;
+            g_ProgramControls.m_backProjection[i] = 0.0f;
         }
 
         // Step 1 - Collect histogram from all three colors 
@@ -339,9 +339,9 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Bind();
         ResourceManager::GetShader( "CollectHistogram" )->Use();
         glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         glDrawArrays( GL_POINTS, 0, 640 * 480 );
-        glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, histogram );
+        glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, g_ProgramControls.m_histogram );
 
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 0 );
@@ -352,28 +352,33 @@ void Application::Render() {
 
         // Step 2 - Create backprojection maps based on inputs
         // Cummative Sum histogram to create backprojection map
-        float count = 0.0f;
-        for( int i = 0; i < 512; i++ ) {
-            count += histogram[i];
-        }
+        //float count = 0.0f;
+        //for( int i = 0; i < 512; i++ ) {
+        //    count += g_ProgramControls.m_histogram[i];
+        //}
 
-        if( count < 1.0 ) {
-            count = 1.0;
-        }
+        //if( count < 1.0 ) {
+        //    count = 1.0;
+        //}
         
         float sum = 0.0f;
-        float scaleFactor = 511.0f / ( count );
+        //float scaleFactor = 511.0f / ( count );
+        float scaleFactor = 511.0f / ( 640 * 480 );
         //std::cout << "Printing backprojection... " << std::endl;
         for( int i = 0; i < 512; i++ ) {
-            sum += histogram[i];
-            backProjection[i] = ( ( sum * scaleFactor ) + 0.5f ) / 512.0f;
-            //std::cout << i << " = " << histogram[i] << "    back projection = " << backProjection[i] << "    sum = " << sum << std::endl;
+            sum += g_ProgramControls.m_histogram[i];
+            g_ProgramControls.m_backProjection[i] = ( ( sum * scaleFactor ) + 0.5f ) / 512.0f;
+            //g_ProgramControls.m_histogram[i] /= float( 640 * 480 );
+
+            //if( i < 10 || i > 501 ) {
+            //    std::cout << i << " = " << g_ProgramControls.m_histogram[i] << "    back projection = " << g_ProgramControls.m_backProjection[i] << "    sum = " << sum << std::endl;
+            //} 
         }
         //std::cout << std::endl << std::endl;
 
         // Step 3 - Send reprojection maps to the GPU
         ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->BindTexture( 0 );
-        glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 1, GL_RED, GL_FLOAT, backProjection );
+        glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 512, 1, GL_RED, GL_FLOAT, g_ProgramControls.m_backProjection );
 
         // Step 4 - Update image based on three reprojection maps
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Bind();
@@ -383,6 +388,35 @@ void Application::Render() {
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BackProjectionOutput" )->BindTexture( 0 );
+        ResourceManager::SaveLastFramebuffer( "BackProjectionOutput" );
+
+        // Step 5 - Get new luminance histogram out to compare
+        // Setup render state
+        glEnable( GL_BLEND );
+        glDisable( GL_POINT_SMOOTH );
+        glBlendFunc( GL_ONE, GL_ONE );
+        glBlendEquation( GL_FUNC_ADD );
+        glEnable( GL_PROGRAM_POINT_SIZE );
+        glDepthMask( GL_FALSE );
+
+        // zero out histogram
+        for( int i = 0; i < 512; i++ ) {
+            g_ProgramControls.m_backProjection[i] = 0.0f;
+        }
+
+        glViewport( 0, 0, 512, 1 );
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Bind();
+        ResourceManager::GetShader( "CollectHistogram" )->Use();
+        glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        glDrawArrays( GL_POINTS, 0, 640 * 480 );
+        glReadPixels( 0, 0, 512, 1, GL_RED, GL_FLOAT, g_ProgramControls.m_backProjection );
+
+        ResourceManager::GetFramebuffer( "CollectHistogramOutput" )->Unbind();
+
+        // Set back statemachine that would affect other filters
+        glDisable( GL_BLEND );
+        glViewport( 0, 0, 640, 480 );
     }
 
     // Image Upscalers
@@ -390,6 +424,7 @@ void Application::Render() {
         // Simple Interpolation
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Bind();
         ResourceManager::GetShader( "SimpleUpscale" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "SimpleUpscaleOutput" )->BindTexture( 0 );
@@ -397,6 +432,7 @@ void Application::Render() {
         // Nearest Neighbor Interpolation
         ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->Bind();
         ResourceManager::GetShader( "NNUpscale" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "NNUpscaleOutput" )->BindTexture( 0 );
@@ -404,6 +440,7 @@ void Application::Render() {
         // Bilinear Interpolation
         ResourceManager::GetFramebuffer( "BilinearOutput" )->Bind();
         ResourceManager::GetShader( "Bilinear" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BilinearOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BilinearOutput" )->BindTexture( 0 );
@@ -411,6 +448,7 @@ void Application::Render() {
         // Bicubic Lagrange Interpolation
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->Bind();
         ResourceManager::GetShader( "BicubicLagrange" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->BindTexture( 0 );
@@ -420,6 +458,7 @@ void Application::Render() {
     if( g_ProgramControls.m_bAntiAliasing == true ) {
         ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
         ResourceManager::GetShader( "AntiAliasing" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
         m_pQuad->RenderQuad();
         ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
         ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );

@@ -4,6 +4,7 @@
 class Window;
 class Quad;
 class TextRenderer;
+//#include "OpenGL/TextRenderer.h"
 class GUI;
 #include "Timer.h"
 class VideoLoader;

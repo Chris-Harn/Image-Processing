@@ -7,7 +7,8 @@ out vec4 FragColor;
 uniform sampler2D u_Texture;
 uniform sampler2D u_BackProjection;
 
-float shift = 1.0 / 1024.0f;
+//float shift = 1.0 / 1024.0f;
+float shift = 1.0 / 2048.0f;
 
 vec3 RGBToHSL( vec3 rgb );
 vec3 HSLToRGB( vec3 hsl );
@@ -15,8 +16,8 @@ vec3 HSLToRGB( vec3 hsl );
 void main() {
 	vec3 hsl = RGBToHSL( texture( u_Texture, FragCoord ).rgb );
 	
-	hsl.z += 0.03;
-	//hsl.z = texture( u_BackProjection, vec2( hsl.z + shift, 0 ) ).r;
+	//hsl.z += 0.09;
+	//hsl.z = texture( u_BackProjection, vec2( hsl.z, 0 ) ).r;
 	//hsl.z = clamp( texture( u_BackProjection, vec2( hsl.z, 0 ) ).r, 0.0, 1.0 );
 
 	FragColor = clamp( vec4 ( HSLToRGB( hsl ), 1.0 ), 0.0, 1.0);

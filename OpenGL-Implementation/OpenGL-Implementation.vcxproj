@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\OpenGL\Debug.cpp" />
     <ClCompile Include="Source\OpenGL\ImageFilter.cpp" />
     <ClCompile Include="Source\ImGui\GUI.cpp" />
     <ClCompile Include="Source\ImGui\imgui.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Source\OpenGL\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\OpenGL\Debug.h" />
     <ClInclude Include="Include\OpenGL\Helper.h" />
     <ClInclude Include="Include\OpenGL\ImageFilter.h" />
     <ClInclude Include="Include\Controls.h" />

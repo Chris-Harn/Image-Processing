@@ -96,6 +96,9 @@
     <ClCompile Include="Source\OpenGL\TextRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\OpenGL\Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Application.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Shaders\EnhancedSaturation.glsl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\OpenGL\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

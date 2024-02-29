@@ -49,6 +49,8 @@ struct ProgramControls {
 
     // ******* Histogram Manipulation *******
     bool m_bHistoramSpread = true;
+    float m_histogram[512];
+    float m_backProjection[512];
 
     // ******* Image Upscalers *******
     int m_upscalerSelection = 3;

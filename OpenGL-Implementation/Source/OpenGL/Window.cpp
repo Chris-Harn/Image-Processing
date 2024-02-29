@@ -1,4 +1,5 @@
 #include "OpenGL/Window.h"
+#include "OpenGL/Debug.h"
 
 #include "Utility.h"
 
@@ -33,14 +34,29 @@ bool Window::Initialization( unsigned int width, unsigned int height,
         
         //// Setup GLFW window properties with OpenGL version
         //glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-        //glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-        //// Core profile = No backwards compatibility and best performance
-        //glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+        //glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 6 );
         //// Allow forward compatiblity
         //glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+        //// Core profile = No backwards compatibility and best performance
+        ////glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+        //glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE );
+        
 
         // Lock current aspect ratio - Must be before window creation
         glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
+
+        #ifdef _DEBUG
+            // Turn on debuggin context
+            glfwWindowHint( GLFW_OPENGL_DEBUG_CONTEXT, true );
+
+            int flags; glGetIntegerv( GL_CONTEXT_FLAGS, &flags );
+            if( flags & GL_CONTEXT_FLAG_DEBUG_BIT ) {
+                glEnable( GL_DEBUG_OUTPUT );
+                glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
+                glDebugMessageCallback( glDebugOutput, nullptr );
+                glDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE );
+            }
+        #endif
     }
 
     m_pWindow = glfwCreateWindow( width, height, title, nullptr, firstWindow );
@@ -110,6 +126,15 @@ void Window::ToggleVsync() {
 void Window::ClearColorBuffer() {
     glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT );
+}
+
+void Window::GetVersion() {
+    printf( (const char *)glGetString( GL_VENDOR ) );
+    printf( "\n" );
+    printf( (const char *)glGetString( GL_RENDERER ) );
+    printf( "\n" );
+    printf( (const char *)glGetString( GL_VERSION ) );
+    printf( "\n" );
 }
 
 void Window::CreateCallbacks() {
