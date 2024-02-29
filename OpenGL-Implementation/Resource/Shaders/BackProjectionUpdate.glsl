@@ -7,9 +7,7 @@ out vec4 FragColor;
 uniform sampler2D u_Texture;
 uniform sampler2D u_BackProjection;
 
-//float shift = 1.0 / 1024.0f;
 float shift = 1.0 / 2048.0f;
-//float shift = 1.0 / 512.0f;
 
 vec3 RGBToHSL( vec3 rgb );
 vec3 HSLToRGB( vec3 hsl );
