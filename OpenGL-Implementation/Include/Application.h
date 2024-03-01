@@ -4,11 +4,9 @@
 class Window;
 class Quad;
 class TextRenderer;
-//#include "OpenGL/TextRenderer.h"
 class GUI;
 #include "Timer.h"
 class VideoLoader;
-class VideoPlayer;
 
 class Application {
 public:
@@ -50,7 +48,6 @@ public:
     GUI *m_pGUI;
     Timer *m_pAppTimer;
     VideoLoader *m_pVideoLoader;
-    VideoPlayer *m_pVideoPlayer;
 };
 
 typedef Application TheApplication;

@@ -1,4 +1,5 @@
 #include "ImGui\GUI.h"
+#include "VideoPlayer.h"
 
 #include "imgui.h"
 #include "imfilebrowser.h"
@@ -85,6 +86,12 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         }
         ImGui::EndMenuBar();
     }
+    if( ImGui::CollapsingHeader( "Video Controls" ) ) {
+        if( ImGui::SmallButton( "Play" ) ) TheVideoPlayer::Instance()->PlayCommand();
+        ImGui::SameLine();
+        if( ImGui::SmallButton( "Pause" ) ) TheVideoPlayer::Instance()->PauseCommand();  
+    }
+
     if( ImGui::CollapsingHeader( "Image Orientation" ) ) {
         ImGui::Checkbox( "Display FPS", &g_ProgramControls.m_bDisplayFPS );
         ImGui::Checkbox( "Flip Horizontal Image", &g_ProgramControls.m_bflipHorizontal );

@@ -57,6 +57,13 @@ bool Window::Initialization( unsigned int width, unsigned int height,
                 glDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE );
             }
         #endif
+    } else if ( windowNumber == 1 ) {
+        // Do nothing different for right now
+    } else {
+        // GUI WINDOW Creation
+        
+        // Resizable controls
+        glfwWindowHint( GLFW_RESIZABLE, GL_TRUE );
     }
 
     m_pWindow = glfwCreateWindow( width, height, title, nullptr, firstWindow );

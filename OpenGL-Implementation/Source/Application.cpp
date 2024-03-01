@@ -28,7 +28,6 @@ Application::Application() : AppRunning(true) {
     m_pGUI = nullptr;
     m_pAppTimer = nullptr;
     m_pVideoLoader = nullptr;
-    m_pVideoPlayer = nullptr;
 }
 
 bool Application::Initialization( unsigned int window_width, 
@@ -188,17 +187,9 @@ bool Application::Initialization( unsigned int window_width,
     // Placeholder till can get GUI to load - Add to update function
     m_pVideoLoader->LoadNewVideo( g_ProgramControls.m_spathToCurrentVideo.c_str(), "-f image2pipe -vcodec rawvideo -pix_fmt rgb24 -" );
 
-    try { m_pVideoPlayer = new VideoPlayer(); }
-    catch( const std::bad_alloc &e ) {
-        (void)e;
-        print_error_message( "ERROR: MEMORY ALLOCATION: Video Player failed to allocate on heap." );
-        return false;
-    }
-
-    // Placeholder till can get GUI to control
-    m_pVideoPlayer->ReadyCommand(); // Tells player something is loaded
-    m_pVideoPlayer->PlayCommand(); 
-    bool test = m_pVideoPlayer->CurrentlyPlaying();
+    // Hardcoded video path, but can setup the Video Player for now
+    TheVideoPlayer::Instance()->ReadyCommand();
+    TheVideoPlayer::Instance()->PlayCommand();
 
     print_message( "Program started without issue." );
 
@@ -238,7 +229,7 @@ void Application::Render() {
 
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
-    if( ( m_pVideoPlayer->CurrentlyPlaying() == true ) && ( m_pVideoLoader->GrabFrameFromVideo() == true ) ) {
+    if( ( TheVideoPlayer::Instance()->CurrentlyPlaying() == true ) && ( m_pVideoLoader->GrabFrameFromVideo() == true ) ) {
         // Grab frame from video and process it
         m_pVideoLoader->BindTexture( 0 );
         ResourceManager::GetShader( "FlipImage" )->Use();
@@ -410,16 +401,6 @@ void Application::Render() {
         glViewport( 0, 0, 640, 480 );
     }
 
-    // Anti-Aliasing Filter
-    if( g_ProgramControls.m_bAntiAliasing == true ) {
-        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
-        ResourceManager::GetShader( "AntiAliasing" )->Use();
-        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
-        m_pQuad->RenderQuad();
-        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
-        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
-    }
-
     // Image Upscalers
     if( g_ProgramControls.m_upscalerSelection == 0 ) {
         // Simple Interpolation
@@ -455,15 +436,15 @@ void Application::Render() {
         ResourceManager::GetFramebuffer( "BicubicLagrangeOutput" )->BindTexture( 0 );
     }
 
-    //// Anti-Aliasing Filter
-    //if( g_ProgramControls.m_bAntiAliasing == true ) {
-    //    ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
-    //    ResourceManager::GetShader( "AntiAliasing" )->Use();
-    //    ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
-    //    m_pQuad->RenderQuad();
-    //    ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
-    //    ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
-    //}
+    // Anti-Aliasing Filter
+    if( g_ProgramControls.m_bAntiAliasing == true ) {
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Bind();
+        ResourceManager::GetShader( "AntiAliasing" )->Use();
+        ResourceManager::GetLastFramebuffer()->BindTexture( 0 );
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "AntiAliasingOutput" )->BindTexture( 0 );
+    }
 
     // Update output gamma
     if( g_ProgramControls.m_boutputGamma == true ) {
@@ -509,8 +490,6 @@ void Application::Render() {
 void Application::CleanUp() {
     // Clean up in reverse order created
     ResourceManager::CleanUp();
-
-    if( m_pVideoPlayer != nullptr ) delete m_pVideoPlayer; m_pVideoPlayer = nullptr;
     if( m_pVideoLoader != nullptr ) delete m_pVideoLoader; m_pVideoLoader = nullptr;
     if( m_pAppTimer != nullptr ) delete m_pAppTimer; m_pAppTimer = nullptr;
     if( m_pGUI != nullptr ) delete m_pGUI; m_pGUI = nullptr;

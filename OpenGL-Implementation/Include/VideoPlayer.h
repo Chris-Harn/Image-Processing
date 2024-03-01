@@ -11,9 +11,13 @@ enum VpState {
 
 class VideoPlayer {
 public:
-    VideoPlayer();
-    ~VideoPlayer();
-
+    static VideoPlayer *Instance() {
+        if( s_pInstance == 0 ) {
+            s_pInstance = new VideoPlayer();
+        }
+        return s_pInstance;
+    }
+    
     void ReadyCommand();
     void PlayCommand();
     void PauseCommand();
@@ -23,7 +27,14 @@ public:
     bool CurrentlyIncrement();
 
 public:
+    VideoPlayer();
+    ~VideoPlayer();
+
+    static VideoPlayer *s_pInstance;
+
     VpState  m_VpState;
 };
+
+typedef VideoPlayer TheVideoPlayer;
 
 #endif

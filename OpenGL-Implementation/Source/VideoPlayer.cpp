@@ -1,5 +1,7 @@
 #include "VideoPlayer.h"
 
+VideoPlayer *VideoPlayer::s_pInstance = 0;
+
 VideoPlayer::VideoPlayer() {
     m_VpState = VpState::WAITING;
 }
