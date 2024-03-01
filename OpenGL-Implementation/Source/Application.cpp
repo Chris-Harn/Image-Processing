@@ -152,7 +152,7 @@ bool Application::Initialization( unsigned int window_width,
         print_error_message( "ERROR: MEMORY ALLOCATION: GUI Window failed to allocate on heap." );
         return false;
     }
-    if( m_pGUIWindow->Initialization( 500, 600, "Video Controls", 2, nullptr ) != true ) {
+    if( m_pGUIWindow->Initialization( 500, 750, "Video Controls", 2, nullptr ) != true ) {
         print_error_message( "ERROR: EXIT EARLY: GUI window failed to initalize." );
         return false;
     }

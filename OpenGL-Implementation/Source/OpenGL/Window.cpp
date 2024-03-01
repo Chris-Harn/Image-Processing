@@ -62,8 +62,7 @@ bool Window::Initialization( unsigned int width, unsigned int height,
     } else {
         // GUI WINDOW Creation
         
-        // Resizable controls
-        glfwWindowHint( GLFW_RESIZABLE, GL_TRUE );
+        // Do nothing different for right now
     }
 
     m_pWindow = glfwCreateWindow( width, height, title, nullptr, firstWindow );
