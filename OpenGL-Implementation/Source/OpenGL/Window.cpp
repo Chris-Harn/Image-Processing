@@ -59,6 +59,9 @@ bool Window::Initialization( unsigned int width, unsigned int height,
         #endif
     } else if ( windowNumber == 1 ) {
         // Do nothing different for right now
+
+        // Lock current aspect ratio - Must be before window creation
+        glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
     } else {
         // GUI WINDOW Creation
         

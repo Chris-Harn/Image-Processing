@@ -34,8 +34,24 @@ vec2 offsets[9] = vec2[]
 float kernel[9] = float[]
 (
 	  -1.0,  -1.0,  -1.0,
-	  -1.0,    9,  -1.0,
+	  -1.0,   9.0,  -1.0,
 	  -1.0,  -1.0,  -1.0
+);
+
+// Sharpened filter
+float kernel2[9] = float[]
+(
+	  -0.8,  -0.8,  -0.8,
+	  -0.8,   7.4,  -0.8,
+	  -0.8,  -0.8,  -0.8
+);
+
+// Sharpened filter
+float kernel3[9] = float[]
+(
+	  -0.6,  -0.6,  -0.6,
+	  -0.6,   5.8,  -0.6,
+	  -0.6,  -0.6,  -0.6
 );
 
 void main() {
