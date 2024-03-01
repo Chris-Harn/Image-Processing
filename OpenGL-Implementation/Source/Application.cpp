@@ -229,8 +229,16 @@ void Application::Render() {
 
     // Capture input frame into texture
     ResourceManager::GetFramebuffer( "OriginalVideo" )->Bind();
+    // NOTE: m_pVideoLoader->GrabFrameFromVideo() does not load up the next frame if the VCR
+    // controls are not set to play. Only in play will it load the next video frame.
     if( ( TheVideoPlayer::Instance()->CurrentlyPlaying() == true ) && ( m_pVideoLoader->GrabFrameFromVideo() == true ) ) {
         // Grab frame from video and process it
+        m_pVideoLoader->BindTexture( 0 );
+        ResourceManager::GetShader( "FlipImage" )->Use();
+        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ProgramControls.m_bflipVertical );
+        ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipHorizontal", g_ProgramControls.m_bflipHorizontal );
+    } else if ( TheVideoPlayer::Instance()->CurrentlyPaused() == true ) {
+        // Paused, but allow image filter changes on last image loaded.
         m_pVideoLoader->BindTexture( 0 );
         ResourceManager::GetShader( "FlipImage" )->Use();
         ResourceManager::GetShader( "FlipImage" )->SetBool( "u_FlipVeritical", g_ProgramControls.m_bflipVertical );
