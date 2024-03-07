@@ -14,11 +14,11 @@ float shift = 1.0 / 512.0f;
 void main() {
 	vec3 rgb = texture( u_Texture, FragCoord ).rgb;
 
-	rgb.r = texture( u_BackProjection_r, vec2( rgb.r ) ).r;
+	rgb.r = texture( u_BackProjection_g, vec2( rgb.r ) ).r;
 	rgb.g = texture( u_BackProjection_g, vec2( rgb.g ) ).r;
-	rgb.b = texture( u_BackProjection_b, vec2( rgb.b ) ).r;
+	rgb.b = texture( u_BackProjection_g, vec2( rgb.b ) ).r;
 	
-	FragColor = clamp( vec4 ( rgb, 1.0 ), 0.0, 0.8 );
+	FragColor = clamp( vec4 ( rgb, 1.0 ), 0.0, 1.0 );
 }
 
 
