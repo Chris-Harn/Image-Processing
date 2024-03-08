@@ -35,6 +35,9 @@ struct ProgramControls {
     bool m_bAntiAliasing = true;
 
     // ****** Filters
+    // Average Frames
+    bool m_bAverageFrame = false;
+    
     // Input Gamma Correction
     bool m_binputGamma = true;
     float m_inputGamma = 1.314f;

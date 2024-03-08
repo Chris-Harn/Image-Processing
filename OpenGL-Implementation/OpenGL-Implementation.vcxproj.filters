@@ -185,6 +185,7 @@
     <None Include="Resource\Shaders\GammaCorrection.glsl" />
     <None Include="Resource\Shaders\CollectHistogram.glsl" />
     <None Include="Resource\Shaders\BackProjectionUpdate.glsl" />
+    <None Include="Resource\Shaders\FrameAverage.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resource\Font\arial.ttf" />

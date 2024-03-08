@@ -67,6 +67,15 @@ bool Application::Initialization( unsigned int window_width,
     ResourceManager::LoadShader( "Resource/Shaders/FlipImage.glsl", "FlipImage" );
     ResourceManager::GetShader( "FlipImage" )->SetInteger( "u_Texture", 0, true );
 
+    ResourceManager::LoadShader( "Resource/Shaders/FrameAverage.glsl", "FrameAveraging" );
+    ResourceManager::GetShader( "FrameAveraging" )->SetInteger( "u_FrameOne", 0, true );
+    ResourceManager::GetShader( "FrameAveraging" )->SetInteger( "u_FrameTwo", 1, true );
+    ResourceManager::GetShader( "FrameAveraging" )->SetInteger( "u_FrameThree", 2, true );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "FrameAveraging01" );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "FrameAveraging02" );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "FrameAveraging03" );
+    ResourceManager::CreateFramebuffer( window_width, window_height, "FrameAveragingOutput" );
+
     ResourceManager::LoadShader( "Resource/Shaders/GammaLUT.glsl", "GammaLUT" );
     ResourceManager::GetShader( "GammaLUT" )->SetInteger( "u_Texture", 0, true );
     ResourceManager::CreateFramebuffer( window_width, window_height, "GammaInput" );
@@ -259,6 +268,52 @@ void Application::Render() {
     
     // Save so can jump straight to last framebuffer
     ResourceManager::SaveLastFramebuffer( "OriginalVideo" );
+
+    // Frame Averaging
+    static int count = 0;
+    if( g_ProgramControls.m_bAverageFrame == true ) {
+        if( TheVideoPlayer::Instance()->CurrentlyPlaying() == true ) { 
+            // Update the frame average
+            switch( count ) {
+            case 0:
+                glCopyImageSubData( ResourceManager::GetFramebuffer( "OriginalVideo" )->GetTextureID(),
+                    GL_TEXTURE_2D, 0, 0, 0, 0,
+                    ResourceManager::GetFramebuffer( "FrameAveraging01" )->GetTextureID(),
+                    GL_TEXTURE_2D, 0, 0, 0, 0,
+                    640, 480, 1 );
+                break;
+            case 1:
+                glCopyImageSubData( ResourceManager::GetFramebuffer( "OriginalVideo" )->GetTextureID(),
+                    GL_TEXTURE_2D, 0, 0, 0, 0,
+                    ResourceManager::GetFramebuffer( "FrameAveraging02" )->GetTextureID(),
+                    GL_TEXTURE_2D, 0, 0, 0, 0,
+                    640, 480, 1 );
+                break;
+            case 2:
+                glCopyImageSubData( ResourceManager::GetFramebuffer( "OriginalVideo" )->GetTextureID(),
+                    GL_TEXTURE_2D, 0, 0, 0, 0,
+                    ResourceManager::GetFramebuffer( "FrameAveraging03" )->GetTextureID(),
+                    GL_TEXTURE_2D, 0, 0, 0, 0,
+                    640, 480, 1 );
+                break;
+            default:
+                break;
+            }
+            count = ( count + 1 ) % 3;
+        }
+
+        ResourceManager::GetFramebuffer( "FrameAveragingOutput" )->Bind();
+        ResourceManager::GetShader( "FrameAveraging" )->Use();
+        ResourceManager::GetFramebuffer( "FrameAveraging01" )->BindTexture( 0 );
+        ResourceManager::GetFramebuffer( "FrameAveraging02" )->BindTexture( 1 );
+        ResourceManager::GetFramebuffer( "FrameAveraging03" )->BindTexture( 2 );
+        m_pQuad->RenderQuad();
+        ResourceManager::GetFramebuffer( "FrameAveragingOutput" )->Unbind();
+        ResourceManager::GetFramebuffer( "FrameAveragingOutput" )->BindTexture( 0 );
+
+        // Save so can jump straight to last framebuffer
+        ResourceManager::SaveLastFramebuffer( "FrameAveragingOutput" );
+    }
 
     // Update input gamma
     if( g_ProgramControls.m_binputGamma == true ) {

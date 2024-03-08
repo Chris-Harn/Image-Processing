@@ -99,7 +99,9 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
     }
 
     if( ImGui::CollapsingHeader( "Shaders" ) ) {
-        ImGui::LabelText( "Stage 1", "Input Gamma" );
+        ImGui::LabelText( "Stage 1", "Input Video" );
+        ImGui::Checkbox( "On/Off Frame Average", &g_ProgramControls.m_bAverageFrame );
+        ImGui::Separator();
         ImGui::Checkbox( "On/Off Input Gamma", &g_ProgramControls.m_binputGamma );
         ImGui::SameLine();
         if( ImGui::Button( "Reset Input Gamma" ) ) {
@@ -153,7 +155,7 @@ void GUI::PollGuiEvents( ProgramControls &g_ProgramControls ) {
         ImGui::Checkbox( "On/Off Anti-Aliasing", &g_ProgramControls.m_bAntiAliasing );
         ImGui::Separator();
 
-        ImGui::LabelText( "Stage 6", "Output Gamma" );
+        ImGui::LabelText( "Stage 6", "Output Video" );
         ImGui::Checkbox( "On/Off Output Gamma", &g_ProgramControls.m_boutputGamma );
         ImGui::SameLine();
         if( ImGui::Button( "Reset Output Gamma" ) ) {
