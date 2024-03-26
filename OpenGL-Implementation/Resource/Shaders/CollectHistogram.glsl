@@ -4,6 +4,9 @@
 layout ( location = 0 ) in vec2 aPos;
 layout ( location = 1 ) in vec2 aTexCoords;
 
+vec3 RGBToHSL( vec3 rgb );
+vec3 HSLToRGB( vec3 hsl );
+
 uniform sampler2D u_Texture;
 
 uniform int u_rgb;
@@ -12,39 +15,10 @@ void main() {
 	ivec2 imDims = textureSize( u_Texture, 0 );
 	ivec2 imageCoordinates = ivec2( ( gl_VertexID ) % imDims.x, ( gl_VertexID ) / imDims.x );
 
-	vec3 rgb = texelFetch( u_Texture, imageCoordinates, 0 ).rgb;
-
-	// Scatter Luminance
-	float intensity = 0.0;
-	if( u_rgb == 0 ) {
-		intensity = clamp( rgb.r, 0.0, 1.0 );
-	} else if ( u_rgb == 1 ) {
-		intensity = clamp( rgb.g, 0.0, 1.0 );	
-	} else {
-		intensity = clamp( rgb.b, 0.0, 1.0 );	
-	}
-
-	// Shift so histogram fits 0 to 511
-	intensity *= 0.9998;
-
-	gl_Position = vec4( ( intensity * 2.0 ) - 1.0, 0.0, 0.0, 1.0 );
-	gl_PointSize = 1.0;
-}
-
-
-
-/*
-vec3 RGBToHSL( vec3 rgb );
-vec3 HSLToRGB( vec3 hsl );
-
-void main() {
-	ivec2 imDims = textureSize( u_Texture, 0 );
-	ivec2 imageCoordinates = ivec2( ( gl_VertexID ) % imDims.x, ( gl_VertexID ) / imDims.x );
-
 	vec3 hsl = RGBToHSL( texelFetch( u_Texture, imageCoordinates, 0 ).rgb );
 
 	// Scatter Luminance
-	float intensity = clamp( hsl.z, 0.0, 1.0 );
+	float intensity = clamp( hsl.b, 0.0, 1.0 );
 
 	// Shift so histogram fits 0 to 511
 	intensity *= 0.9998;
@@ -95,8 +69,6 @@ vec3 HSLToRGB( vec3 hsl ) {
 
 	return rgb;
 }
-
-*/
 
 
 #shader fragment

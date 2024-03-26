@@ -48,13 +48,13 @@ struct ProgramControls {
 
     // Saturation Enhance
     bool m_bEnhanceSaturation = true;
-    float m_enhanceSaturation = 1.0f;
+    float m_enhanceSaturation = 0.228f;
 
     // ******* Histogram Manipulation *******
-    bool m_bHistoramSpread = true;
-    float m_histogram[512];
-    float m_stretchHistogram[512];
-    float m_backProjection[512];
+    bool m_bHistoramSpread = false;
+    float m_percentage = 0.2f;
+    float m_initalHistogram[512];
+    float m_finalHistogram[512];
 
     // ******* Image Upscalers *******
     int m_upscalerSelection = 3;

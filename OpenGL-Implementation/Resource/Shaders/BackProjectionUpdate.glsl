@@ -5,43 +5,21 @@ in vec2 FragCoord;
 out vec4 FragColor;
 
 uniform sampler2D u_Texture;
-uniform sampler2D u_BackProjection_r;
-uniform sampler2D u_BackProjection_g;
-uniform sampler2D u_BackProjection_b;
-
-float shift = 1.0 / 512.0f;
-
-void main() {
-	vec3 rgb = texture( u_Texture, FragCoord ).rgb;
-
-	rgb.r = texture( u_BackProjection_g, vec2( rgb.r ) ).r;
-	rgb.g = texture( u_BackProjection_g, vec2( rgb.g ) ).r;
-	rgb.b = texture( u_BackProjection_g, vec2( rgb.b ) ).r;
-	
-	FragColor = clamp( vec4 ( rgb, 1.0 ), 0.0, 1.0 );
-}
-
-
-/*
-
-uniform sampler2D u_Texture;
 uniform sampler2D u_BackProjection;
-uniform int u_rgb;
-
-float shift = 1.0 / 2048.0f;
 
 vec3 RGBToHSL( vec3 rgb );
 vec3 HSLToRGB( vec3 hsl );
 
+float shift = 1.0 / 512.0f;
+
 void main() {
 	vec3 hsl = RGBToHSL( texture( u_Texture, FragCoord ).rgb );
-	
-	hsl.z += 0.03;
-	//hsl.z = texture( u_BackProjection, vec2( clamp( hsl.z - shift, 0.0, 1.0 ), 0 ) ).r;
-	//hsl.z = clamp( texture( u_BackProjection, vec2( clamp( hsl.z + shift, 0.0, 1.0 ), 0 ) ).r, 0.0, 1.0 );
-	//hsl.z = texture( u_BackProjection, vec2( hsl.z - shift, 0 ) ).r;
 
-	FragColor = clamp( vec4 ( HSLToRGB( hsl ), 1.0 ), 0.0, 1.0);
+	hsl.z = texture( u_BackProjection, vec2( hsl.z ) ).r;
+
+	vec3 rgb = HSLToRGB( hsl );
+	
+	FragColor = clamp( vec4 ( rgb, 1.0 ), 0.0, 1.0 );
 }
 
 vec3 RGBToHSL( vec3 rgb ) {
@@ -86,7 +64,6 @@ vec3 HSLToRGB( vec3 hsl ) {
 
 	return rgb;
 }
-*/
 
 
 #shader vertex
