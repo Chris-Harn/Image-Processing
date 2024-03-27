@@ -52,7 +52,7 @@ struct ProgramControls {
 
     // ******* Histogram Manipulation *******
     bool m_bHistoramSpread = false;
-    float m_percentage = 0.2f;
+    float m_percentage = 0.1f;
     float m_initalHistogram[512];
     float m_finalHistogram[512];
 

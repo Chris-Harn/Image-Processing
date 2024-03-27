@@ -413,7 +413,6 @@ void Application::Render() {
 
         // Step 2 - Create backprojection maps based on inputs.
         float maxValue = g_ProgramControls.m_percentage * ( 640 * 480 );
-        std::cout << "Max Value = " << maxValue << std::endl;
         float redistributeAmount = 0.0f;
         float excessAmount = 0.0f;
         for( int i = 0; i < 512; i++ ) {
