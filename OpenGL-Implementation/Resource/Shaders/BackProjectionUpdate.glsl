@@ -16,7 +16,7 @@ float PI = 3.14159265;
 void main() {
 	vec3 hsi = RGBToHSI( texture( u_Texture, FragCoord ).rgb );
 
-	hsi.z = texture( u_BackProjection, vec2( hsi.z ) ).r;
+	hsi.z = texture( u_BackProjection, vec2( clamp( hsi.z - shift, 0.0, 1.0 ), 0.0 ) ).r;
 
 	vec3 rgb = HSIToRGB( hsi );
 	
